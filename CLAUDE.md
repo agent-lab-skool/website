@@ -2,36 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Agent Orchestration
-
-**Act as an orchestrator, not a single-threaded worker.** For any task beyond a simple, direct change (e.g. "rename this variable", "fix this typo"), break the work into sub-tasks and delegate to specialized sub-agents in parallel using the Task tool.
-
-**When to orchestrate:**
-- Feature work touching multiple files or concerns (DB + UI + server action)
-- Tasks that need research/exploration before implementation
-- Bug reports that need investigation before a fix
-- Any request with 2+ independent workstreams
-
-**When to just do it directly:**
-- Single-file edits, small tweaks, quick answers
-- Tasks where orchestration overhead would be slower than just doing it
-
-**Available sub-agents:**
-| Agent | Use for |
-|-------|---------|
-| `Explore` | Fast codebase search, find files/patterns, understand architecture |
-| `Plan` | Design implementation approach, identify files to change, architectural decisions |
-| `bug-fixer` | Investigate and fix bugs, runtime errors, build failures |
-| `general-purpose` | Multi-step research, web lookups, anything that doesn't fit above |
-| `Bash` | Git operations, running commands, installs |
-| `supabase-agent` | **All Supabase work**: migrations, schema changes, Edge Functions, SQL queries. Must regenerate `src/types/supabase.ts` after any schema change. |
-
-**How to orchestrate well:**
-- Launch independent sub-agents **in parallel** (single message, multiple Task calls)
-- Give each agent a clear, self-contained prompt with all context it needs
-- After agents return, synthesize results and do the actual implementation yourself (or delegate further)
-- Use the todo list (`TaskCreate`/`TaskUpdate`) to track progress on multi-step work
-
 ## Commands
 
 ```bash
@@ -126,9 +96,8 @@ The long-term plan is to **replace Skool with a fully custom-built platform** on
 ## Data & Server Patterns
 
 - **Prefer server-side over client-side.** Use Server Components, Server Actions, and server-side data fetching by default. Only use client components (`"use client"`) when you need interactivity (event handlers, hooks, browser APIs). Keep data mutations in Server Actions, not client-side API calls.
-- **Supabase project:** `mawsuyyjxqykenglouky` (region: us-east-1). Server-side client lives in `src/lib/supabase/server.ts`, browser client in `src/lib/supabase/client.ts`.
-- **Delegate all Supabase work to the `supabase-agent`.** Any task that touches the database schema (migrations, tables, indexes), Edge Functions, or Supabase configuration must be delegated to the supabase agent via the Task tool. Do not run Supabase MCP tools (apply_migration, execute_sql, etc.) directly from the orchestrator.
-- **RLS strategy: enable but never create policies.** Every table must have RLS enabled (no exceptions), but do NOT create any RLS policies. Instead, all data access happens through Server Actions using the admin client (`src/lib/supabase/admin.ts`), which uses the service role key (`SUPABASE_SECRET_KEY`) and bypasses RLS. This keeps the database locked down from direct client access while giving server-side code full access. Never use the browser client or the SSR client (publishable key) for data mutations.
+- **Supabase project:** `mawsuyyjxqykenglouky` (region: us-east-1). Admin client lives in `src/lib/supabase/admin.ts`.
+- **RLS strategy: enable but never create policies.** Every table must have RLS enabled (no exceptions), but do NOT create any RLS policies. Instead, all data access happens through Server Actions using the admin client (`src/lib/supabase/admin.ts`), which uses the service role key (`SUPABASE_SECRET_KEY`) and bypasses RLS.
 - **Keep `src/types/supabase.ts` in sync.** After any schema change, regenerate types using the Supabase MCP `generate_typescript_types` tool and write the output to `src/types/supabase.ts`. All Supabase clients should be typed with `Database` from this file.
 
 ## Copy Style
