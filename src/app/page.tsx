@@ -1,5 +1,6 @@
+import { WHOP_URL } from "@/lib/constants/links";
 import { redirect } from "next/navigation";
 
 export default function Home() {
-  redirect("/ai");
+  redirect(WHOP_URL);
 }
