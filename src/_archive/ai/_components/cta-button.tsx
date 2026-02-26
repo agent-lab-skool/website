@@ -3,14 +3,14 @@
 import { ArrowRight } from "lucide-react";
 import { track } from "@vercel/analytics";
 import { RainbowButton } from "@/components/ui/rainbow-button";
-import { WHOP_URL } from "@/lib/constants/links";
+import { SKOOL_URL } from "@/lib/constants/links";
 import { cn } from "@/lib/utils";
 
 export function CtaButton({ className }: { className?: string }) {
   return (
     <RainbowButton asChild size="lg" className={cn(className)}>
       <a
-        href={WHOP_URL}
+        href={SKOOL_URL}
         target="_blank"
         rel="noopener noreferrer"
         className="group/btn"

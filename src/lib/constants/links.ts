@@ -1,1 +1,1 @@
-export const WHOP_URL = "https://www.skool.com/agent-lab";
+export const SKOOL_URL = "https://www.skool.com/agent-lab";
