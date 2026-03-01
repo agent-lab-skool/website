@@ -21,8 +21,7 @@ Package manager is **Bun** (bun.lock).
 
 ### Routing
 
-- `/` redirects to `/ai`
-- `/ai` is the main page (`src/app/ai/page.tsx`)
+- `/` is the main landing page (`src/app/page.tsx`)
 
 ### Page Folder Structure
 
@@ -58,9 +57,9 @@ bunx shadcn@latest add <component-name>
 
 ## Product Context
 
-### Lekkas' AI Lab -- `/ai` page
+### Agent Lab -- `/` page
 
-The `/ai` page is a conversion-focused sales page for **Lekkas' AI Lab**, a paid community targeting builders and founders who want to use AI to grow their businesses. The community is hosted on **Skool**.
+The `/` page is a conversion-focused sales page for **Agent Lab**, a paid community targeting builders and founders who want to use AI to grow their businesses. The community is hosted on **Skool**.
 
 **Traffic flow:** Instagram/TikTok -> ManyChat -> this page -> Skool
 
