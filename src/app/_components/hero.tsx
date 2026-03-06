@@ -93,6 +93,7 @@ function VideoPlayer() {
     v.muted = false;
     setMuted(false);
     setShowUnmuteOverlay(false);
+    setShowTimedCta(false);
     v.play();
   }, []);
 
@@ -102,8 +103,9 @@ function VideoPlayer() {
     if (!v) return;
 
     const tick = () => {
-      if (v.currentTime !== undefined) {
-        setCurrentTime(v.currentTime);
+      setCurrentTime(v.currentTime);
+      if (v.duration && isFinite(v.duration)) {
+        setDuration(v.duration);
       }
       if (v.currentTime >= CTA_APPEAR_TIME) setShowTimedCta(true);
       rafRef.current = requestAnimationFrame(tick);
@@ -232,13 +234,13 @@ function VideoPlayer() {
 
       {/* Timed CTA */}
       <AnimatePresence>
-        {showTimedCta && !hasEnded && (
+        {showTimedCta && playing && !hasEnded && !showUnmuteOverlay && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.4 }}
-            className="absolute inset-x-0 bottom-14 z-20 flex justify-center"
+            className="absolute inset-x-0 bottom-14 z-20 flex justify-center pointer-events-auto"
           >
             <CtaButton />
           </motion.div>
@@ -282,26 +284,13 @@ function VideoPlayer() {
         )}
       >
         {/* Progress bar (non-interactive) */}
-        <div className="mb-4 h-1 w-full rounded-full bg-white/20">
+        <div className="h-1 w-full rounded-full bg-white/20">
           <div
-            className="h-full rounded-full bg-white transition-[width] duration-300 ease-linear"
+            className="h-full rounded-full bg-white"
             style={{ width: `${progress}%` }}
           />
         </div>
 
-        {/* Controls row */}
-        <div className="flex items-center">
-          <button
-            onClick={togglePlay}
-            className="cursor-pointer text-white/70 transition-colors hover:text-white"
-          >
-            {playing ? (
-              <Pause className="size-5" />
-            ) : (
-              <Play className="size-5" />
-            )}
-          </button>
-        </div>
       </div>
     </div>
   );
