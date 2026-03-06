@@ -320,9 +320,7 @@ export function Hero() {
       <div className="relative z-10 mx-auto max-w-5xl px-6 pt-20 pb-6 sm:pt-32 sm:pb-8">
         {/* Headline */}
         <h1 className="text-4xl leading-[1.12] font-medium tracking-normal text-white sm:text-5xl md:text-6xl lg:text-7xl">
-          Build
-          <br className="sm:hidden" />
-          {" "}
+          Build{" "}
           <span className="relative inline-flex align-baseline">
             {/* Hidden sizer, renders longest phrase to hold width */}
             <span className="invisible whitespace-nowrap font-[family-name:var(--font-instrument-serif)] italic">
@@ -331,10 +329,10 @@ export function Hero() {
             <AnimatePresence mode="wait">
               <motion.span
                 key={index}
-                initial={{ opacity: 0, scale: 0.96, y: 12 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96, y: -12 }}
-                transition={{ duration: 0.35, ease: "easeInOut" }}
+                initial={{ opacity: 0, filter: "blur(8px)" }}
+                animate={{ opacity: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, filter: "blur(8px)" }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="absolute inset-0 whitespace-nowrap font-[family-name:var(--font-instrument-serif)] italic underline decoration-white/30 underline-offset-[6px]"
               >
                 {shuffled[index]}
