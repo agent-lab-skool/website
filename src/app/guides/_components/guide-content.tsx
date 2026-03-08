@@ -1,19 +1,43 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Copy, Check } from "lucide-react";
 import type { Guide, GuideBlock, GuideSection } from "../_lib/guides";
 import { SubtleCta, MidCta, BottomCta } from "./guide-cta";
 import { cn } from "@/lib/utils";
 
 function CodeBlock({ content, language }: { content: string; language?: string }) {
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
   return (
-    <div className="my-4 overflow-hidden rounded-lg border border-white/10">
-      {language && (
-        <div className="border-b border-white/10 bg-white/[0.03] px-4 py-1.5 text-xs font-mono text-neutral-500">
-          {language}
-        </div>
-      )}
+    <div className="group/code my-4 overflow-hidden rounded-lg border border-white/10">
+      <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.03] px-4 py-1.5">
+        <span className="text-xs font-mono text-neutral-500">
+          {language || "code"}
+        </span>
+        <button
+          onClick={handleCopy}
+          className="flex items-center gap-1 text-xs text-neutral-500 transition-colors hover:text-white"
+        >
+          {copied ? (
+            <>
+              <Check className="size-3" />
+              copied
+            </>
+          ) : (
+            <>
+              <Copy className="size-3" />
+              copy
+            </>
+          )}
+        </button>
+      </div>
       <pre className="overflow-x-auto bg-white/[0.02] p-4 text-sm leading-relaxed">
         <code className="font-mono text-neutral-300">{content}</code>
       </pre>

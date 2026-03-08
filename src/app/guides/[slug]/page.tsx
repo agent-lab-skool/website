@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getAllGuides, getGuide } from "../_lib/guides";
 import { GuideContent } from "../_components/guide-content";
-import { DotPattern } from "@/components/ui/dot-pattern";
-import { cn } from "@/lib/utils";
+
+
 
 export async function generateStaticParams() {
   const guides = getAllGuides();
@@ -37,16 +37,6 @@ export default async function GuidePage({
   return (
     <main className="min-h-screen">
       <div className="relative overflow-x-hidden bg-background">
-        <DotPattern
-          cr={1.2}
-          width={24}
-          height={24}
-          className={cn(
-            "text-white/[0.15]",
-            "[mask-image:radial-gradient(ellipse_at_top,white_10%,transparent_50%)]"
-          )}
-        />
-
         {/* Header */}
         <div className="relative z-10 mx-auto max-w-2xl px-6 pt-12 pb-4">
           <a

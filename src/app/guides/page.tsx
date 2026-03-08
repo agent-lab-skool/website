@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { getAllGuides } from "./_lib/guides";
-import { DotPattern } from "@/components/ui/dot-pattern";
-import { cn } from "@/lib/utils";
+
+
 
 export const metadata: Metadata = {
   title: "Free Guides | aflekkas",
@@ -16,17 +16,7 @@ export default function GuidesIndex() {
   return (
     <main className="min-h-screen">
       <div className="relative overflow-x-hidden bg-background">
-        <DotPattern
-          cr={1.2}
-          width={24}
-          height={24}
-          className={cn(
-            "text-white/[0.15]",
-            "[mask-image:radial-gradient(ellipse_at_top,white_10%,transparent_50%)]"
-          )}
-        />
-
-        <div className="relative z-10 mx-auto max-w-2xl px-6 pt-12 pb-20">
+        <div className="mx-auto max-w-2xl px-6 pt-12 pb-20">
           <a
             href="/"
             className="group inline-flex items-center gap-1.5 text-xs font-mono text-neutral-500 transition-colors hover:text-white"
