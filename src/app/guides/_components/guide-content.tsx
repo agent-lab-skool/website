@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ChevronDown, Copy, Check } from "lucide-react";
 import type { Guide, GuideBlock, GuideSection } from "../_lib/guides";
-import { SubtleCta, MidCta, BottomCta } from "./guide-cta";
+import { SubtleCta, MidCta, BottomCta, FinalCta } from "./guide-cta";
 import { cn } from "@/lib/utils";
 
 function CodeBlock({ content, language }: { content: string; language?: string }) {
@@ -270,13 +270,11 @@ export function GuideContent({ guide }: { guide: Guide }) {
         </>
       )}
 
-      {/* Testimonials */}
-      <div className="mt-10 h-px bg-white/10" />
-      <TestimonialsSection />
-
-      {/* Bottom CTA */}
+      {/* Bottom CTA with testimonials as proof */}
       <div className="mt-10 h-px bg-white/10" />
       <BottomCta />
+      <TestimonialsSection />
+      <FinalCta />
     </article>
   );
 }
