@@ -10,6 +10,7 @@
       "heading": "ShadCN UI",
       "blocks": [
         { "type": "text", "content": "ShadCN is a component library that gives you clean, production-ready UI components. Instead of building buttons, cards, and navbars from scratch, you pull them in and customize. It's not a framework you install globally. You copy the components you need into your project." },
+        { "type": "image", "url": "https://i.imgur.com/WCH2mOK.png", "caption": "ShadCN UI component library" },
         { "type": "link", "text": "Official docs", "url": "https://ui.shadcn.com/" },
         { "type": "text", "content": "To use it with Claude Code, install the ShadCN MCP server. This lets Claude directly browse and pull components from the ShadCN registry while building your page." },
         { "type": "heading3", "content": "Install the MCP server" },
@@ -22,6 +23,7 @@
       "heading": "Magic UI",
       "blocks": [
         { "type": "text", "content": "Magic UI takes things up a notch. It's built on top of ShadCN and adds animated components, transitions, and effects that make your landing page feel alive. Think: animated gradients, text reveals, marquees, bento grids." },
+        { "type": "image", "url": "https://i.imgur.com/i4VQsyO.png", "caption": "Magic UI animated components" },
         { "type": "link", "text": "Official docs", "url": "https://magicui.design/" },
         { "type": "text", "content": "Same deal. Install the Magic UI MCP server so Claude Code can access the full component library while it builds." },
         { "type": "heading3", "content": "Install the MCP server" },
@@ -43,6 +45,7 @@
       "heading": "Playwright MCP",
       "blocks": [
         { "type": "text", "content": "This is the secret weapon. The Playwright MCP server gives Claude Code the ability to open a browser, navigate to your dev server, and take screenshots of your landing page. That means it can see what it built, decide if it looks right, and iterate automatically." },
+        { "type": "image", "url": "https://i.imgur.com/4rhunqC.png", "caption": "Playwright browser automation" },
         { "type": "link", "text": "Official docs", "url": "https://playwright.dev/" },
         { "type": "text", "content": "No more copy-pasting screenshots into chat. Claude Code just looks at the page itself." },
         { "type": "heading3", "content": "Install the MCP server" },

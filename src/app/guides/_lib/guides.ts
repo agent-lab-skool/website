@@ -8,6 +8,7 @@ export interface GuideBlock {
   items?: string[];
   text?: string;
   url?: string;
+  caption?: string;
 }
 
 export interface GuideSection {
