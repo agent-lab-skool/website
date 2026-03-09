@@ -63,6 +63,20 @@ Guides use **JSON files** in `content/guides/*.json` (not MDX). Each JSON file d
 
 To add a new guide, create a JSON file in `content/guides/<slug>.json` matching the `Guide` interface.
 
+#### Linking Inro Automations to Guides
+
+Each guide can reference the Inro (Instagram DM automation) scenarios that drive traffic to it. Add the `inroScenarioIds` field to the guide JSON with the scenario ID(s) from Inro:
+
+```json
+{
+  "slug": "my-guide",
+  "inroScenarioIds": [20725],
+  ...
+}
+```
+
+This connects the automation to the guide in the analytics dashboard (`/dashboard`), showing the full funnel: DMs sent → page views → Skool clicks. The scenario IDs can be found via the Inro API (`GET https://api.inro.social/api/v1/scenarios`) or in the Inro dashboard URL (e.g. `.../scenarios/20725`).
+
 ### Constants
 
 - `src/lib/constants/links.ts` — `SKOOL_URL` (all CTAs link here)
@@ -78,6 +92,8 @@ To add a new guide, create a JSON file in `content/guides/<slug>.json` matching 
 
 `@vercel/analytics` and `@vercel/speed-insights` are integrated in the root layout.
 
+**Custom tracking** (`/dashboard`): Tracks page views and CTA clicks per guide via `POST /api/track`. The dashboard also pulls DM metrics from the **Inro API** for guides that have `inroScenarioIds` set, showing a full funnel view. Requires `INRO_API_KEY` env var.
+
 ### shadcn Configuration
 
 Registry config in `components.json`. To add a shadcn component:
@@ -91,7 +107,7 @@ bunx shadcn@latest add <component-name>
 
 The `/` page is a conversion-focused sales page for **Agent Lab**, a paid community targeting builders and founders who want to use AI to grow their businesses. The community is hosted on **Skool**.
 
-**Traffic flow:** Instagram/TikTok -> ManyChat -> this page -> Skool
+**Traffic flow:** Instagram/TikTok -> Inro (DM automation) -> lead magnet guide -> Skool
 
 **What the community offers:**
 - AI playbooks & workflows for automating business ops, content, sales
