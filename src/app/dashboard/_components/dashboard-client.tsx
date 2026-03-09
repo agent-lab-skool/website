@@ -15,6 +15,7 @@ import {
 
 interface PageStat {
   page: string;
+  dms: number;
   views: number;
   clicks: number;
   rate: string;
@@ -31,7 +32,7 @@ interface StatsResponse {
   range: string;
   stats: PageStat[];
   daily: DailyPoint[];
-  totals: { views: number; clicks: number; rate: string };
+  totals: { dms: number; views: number; clicks: number; rate: string };
 }
 
 const ranges = [
@@ -79,9 +80,10 @@ export function DashboardClient() {
 
       {/* Totals */}
       {data && !loading && (
-        <div className="mt-6 grid grid-cols-3 gap-4">
-          <StatCard label="Total views" value={data.totals.views.toLocaleString()} />
-          <StatCard label="Total clicks" value={data.totals.clicks.toLocaleString()} />
+        <div className="mt-6 grid grid-cols-4 gap-4">
+          <StatCard label="DMs sent" value={data.totals.dms.toLocaleString()} />
+          <StatCard label="Page views" value={data.totals.views.toLocaleString()} />
+          <StatCard label="Skool clicks" value={data.totals.clicks.toLocaleString()} />
           <StatCard label="CTR" value={`${data.totals.rate}%`} />
         </div>
       )}
@@ -154,10 +156,13 @@ export function DashboardClient() {
                 Page
               </th>
               <th className="px-4 py-3 text-right font-medium text-neutral-400">
+                DMs
+              </th>
+              <th className="px-4 py-3 text-right font-medium text-neutral-400">
                 Views
               </th>
               <th className="px-4 py-3 text-right font-medium text-neutral-400">
-                Clicks
+                Skool clicks
               </th>
               <th className="px-4 py-3 text-right font-medium text-neutral-400">
                 CTR
@@ -168,7 +173,7 @@ export function DashboardClient() {
             {loading ? (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   className="px-4 py-8 text-center text-neutral-500"
                 >
                   Loading...
@@ -184,6 +189,9 @@ export function DashboardClient() {
                     {row.page}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
+                    {row.dms.toLocaleString()}
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
                     {row.views.toLocaleString()}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
@@ -197,7 +205,7 @@ export function DashboardClient() {
             ) : (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   className="px-4 py-8 text-center text-neutral-500"
                 >
                   No data yet. Views will appear as traffic comes in.

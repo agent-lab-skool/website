@@ -23,6 +23,7 @@ export interface Guide {
   description: string;
   date: string;
   intro: string;
+  inroScenarioIds?: number[];
   sections: GuideSection[];
   example?: GuideSection;
   proTips?: { title: string; body: string }[];
