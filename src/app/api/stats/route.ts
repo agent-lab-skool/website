@@ -44,9 +44,41 @@ export async function GET(req: NextRequest) {
     { views: 0, clicks: 0 }
   );
 
+  // Daily breakdown for charts
+  const allEvents = await prisma.pageEvent.findMany({
+    where: { createdAt: { gte: since } },
+    select: { event: true, createdAt: true },
+    orderBy: { createdAt: "asc" },
+  });
+
+  const dailyMap: Record<string, { views: number; clicks: number }> = {};
+
+  // Pre-fill all days in range
+  const displayDays = Math.min(days, 365);
+  for (let i = 0; i < displayDays; i++) {
+    const d = new Date(Date.now() - (displayDays - 1 - i) * 86_400_000);
+    const key = d.toISOString().split("T")[0];
+    dailyMap[key] = { views: 0, clicks: 0 };
+  }
+
+  for (const e of allEvents) {
+    const key = e.createdAt.toISOString().split("T")[0];
+    if (!dailyMap[key]) dailyMap[key] = { views: 0, clicks: 0 };
+    if (e.event === "view") dailyMap[key].views++;
+    if (e.event === "cta_click") dailyMap[key].clicks++;
+  }
+
+  const daily = Object.entries(dailyMap).map(([date, data]) => ({
+    date,
+    views: data.views,
+    clicks: data.clicks,
+    ctr: data.views > 0 ? Number(((data.clicks / data.views) * 100).toFixed(1)) : 0,
+  }));
+
   return NextResponse.json({
     range,
     stats,
+    daily,
     totals: {
       ...totals,
       rate:

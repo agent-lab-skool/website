@@ -1,3 +1,5 @@
+import { PageTracker } from "@/components/tracker";
+
 export default function GuidesLayout({
   children,
 }: {
@@ -8,6 +10,7 @@ export default function GuidesLayout({
       <div className="relative overflow-x-hidden bg-background">
         <div className="mx-auto max-w-3xl px-6 pt-12 pb-20">
           {children}
+          <PageTracker />
         </div>
       </div>
     </main>

@@ -1,6 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  BarChart,
+  Bar,
+} from "recharts";
 
 interface PageStat {
   page: string;
@@ -9,9 +20,17 @@ interface PageStat {
   rate: string;
 }
 
+interface DailyPoint {
+  date: string;
+  views: number;
+  clicks: number;
+  ctr: number;
+}
+
 interface StatsResponse {
   range: string;
   stats: PageStat[];
+  daily: DailyPoint[];
   totals: { views: number; clicks: number; rate: string };
 }
 
@@ -20,6 +39,11 @@ const ranges = [
   { label: "30 days", value: "30d" },
   { label: "All time", value: "all" },
 ];
+
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
 
 export function DashboardClient() {
   const [range, setRange] = useState("7d");
@@ -62,8 +86,91 @@ export function DashboardClient() {
         </div>
       )}
 
+      {/* Charts */}
+      {data && !loading && data.daily.length > 0 && (
+        <div className="mt-8 space-y-8">
+          {/* Views & Clicks chart */}
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <p className="mb-4 text-sm font-medium text-neutral-400">
+              Views & Clicks per day
+            </p>
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={data.daily}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={formatDate}
+                  tick={{ fill: "#737373", fontSize: 11 }}
+                  axisLine={{ stroke: "#ffffff10" }}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fill: "#737373", fontSize: 11 }}
+                  axisLine={false}
+                  tickLine={false}
+                  allowDecimals={false}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "#171717",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 8,
+                    fontSize: 12,
+                  }}
+                  labelFormatter={(v) => formatDate(String(v))}
+                />
+                <Bar dataKey="views" fill="#ffffff" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="clicks" fill="#737373" radius={[3, 3, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* CTR chart */}
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <p className="mb-4 text-sm font-medium text-neutral-400">
+              Click-through rate (%)
+            </p>
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={data.daily}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={formatDate}
+                  tick={{ fill: "#737373", fontSize: 11 }}
+                  axisLine={{ stroke: "#ffffff10" }}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fill: "#737373", fontSize: 11 }}
+                  axisLine={false}
+                  tickLine={false}
+                  unit="%"
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "#171717",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 8,
+                    fontSize: 12,
+                  }}
+                  labelFormatter={(v) => formatDate(String(v))}
+                  formatter={(value) => [`${value}%`, "CTR"]}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="ctr"
+                  stroke="#ffffff"
+                  fill="#ffffff10"
+                  strokeWidth={1.5}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
-      <div className="mt-6 overflow-hidden rounded-xl border border-white/10">
+      <div className="mt-8 overflow-hidden rounded-xl border border-white/10">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/10 bg-white/[0.03]">
