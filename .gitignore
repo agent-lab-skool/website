@@ -42,3 +42,5 @@ yarn-error.log*
 next-env.d.ts
 public/vsl_original.mp4
 public/landing/vsl/vsl.mp4
+
+/src/generated/prisma

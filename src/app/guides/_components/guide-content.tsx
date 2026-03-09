@@ -55,17 +55,24 @@ function ProTip({ title, body }: { title: string; body: string }) {
       >
         <ChevronDown
           className={cn(
-            "size-4 shrink-0 text-neutral-500 transition-transform",
+            "size-4 shrink-0 text-neutral-500 transition-transform duration-200",
             open && "rotate-180"
           )}
         />
         {title}
       </button>
-      {open && (
-        <p className="pb-4 pl-6 text-sm leading-relaxed text-neutral-400">
-          {body}
-        </p>
-      )}
+      <div
+        className={cn(
+          "grid transition-[grid-template-rows] duration-200 ease-out",
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        )}
+      >
+        <div className="overflow-hidden">
+          <p className="pb-4 pl-6 text-sm leading-relaxed text-neutral-400">
+            {body}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -152,7 +159,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "Built my own ClawdBot using just Claude Code and saved hundreds of $. The age of self-improving AI is here and this community really does teach how to harness it.",
+      "Built my own ClawdBot using just Claude Code and saved hundreds of $. This community really does teach you how to harness AI.",
     name: "Nathan Lee",
     role: "AI Tinkerer & CS Student",
     image: "/landing/testimonials/nathan.jpeg",
@@ -171,6 +178,34 @@ const TESTIMONIALS = [
     role: "Partner, VantagePoint",
     image: "/landing/testimonials/davin.jpeg",
   },
+  {
+    quote:
+      "Knew how to vibe code in Cursor but Claude Code took it to another level. Landed an internship at a YC company off what I built.",
+    name: "Tim Yu",
+    role: "Student @ UChicago",
+    image: "/landing/testimonials/tim.jpeg",
+  },
+  {
+    quote:
+      "Built my own website for luxury watch sourcing, then landed my first web building client within a week for $1.2K. Insane ROI.",
+    name: "Henry Ohler",
+    role: "Entrepreneur & Watch Dealer",
+    image: "/landing/testimonials/henry.jpeg",
+  },
+  {
+    quote:
+      "Was waiting on developers for ages to build ClubLinked. Totally non-technical, but I built and shipped it myself. Saved months and thousands in dev costs.",
+    name: "Eleftherios Ntrigkogias",
+    role: "Founder, ClubLinked",
+    image: "/landing/testimonials/eleftherios.jpg",
+  },
+  {
+    quote:
+      "Used to spend 5 hours on a landing page in Framer. Now I build them in 30 minutes. Been closing thousands in clients every month.",
+    name: "Jackson Gerner",
+    role: "Growth Operator & VSLs",
+    image: "/landing/testimonials/jackson.jpg",
+  },
 ];
 
 function TestimonialCard({
@@ -185,11 +220,11 @@ function TestimonialCard({
   image: string;
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
+    <div className="flex flex-col rounded-xl border border-white/10 bg-white/[0.02] p-5">
       <p className="text-sm leading-relaxed text-neutral-300">
         &ldquo;{quote}&rdquo;
       </p>
-      <div className="mt-4 flex items-center gap-3">
+      <div className="mt-auto flex items-center gap-3 pt-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={image}
@@ -209,10 +244,10 @@ function TestimonialsSection() {
   return (
     <div className="mt-12">
       <p className="text-xs font-mono uppercase tracking-[0.2em] text-neutral-500">
-        What members are building
+        What people are saying
       </p>
       <h2 className="mt-3 text-xl font-medium tracking-tight text-white">
-        Real results from real builders.
+        Don&apos;t just take my word for it.
       </h2>
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {TESTIMONIALS.map((t) => (
@@ -227,7 +262,7 @@ export function GuideContent({ guide }: { guide: Guide }) {
   const midPoint = Math.floor(guide.sections.length / 2);
 
   return (
-    <article className="mx-auto max-w-2xl px-6 pb-20">
+    <article>
       {/* Intro */}
       <p className="mt-2 text-sm leading-relaxed text-neutral-400">
         {guide.intro}
@@ -273,6 +308,7 @@ export function GuideContent({ guide }: { guide: Guide }) {
       {/* Bottom CTA with testimonials as proof */}
       <div className="mt-10 h-px bg-white/10" />
       <BottomCta />
+      <FinalCta />
       <TestimonialsSection />
       <FinalCta />
     </article>

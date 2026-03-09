@@ -3,16 +3,16 @@
   "title": "Build Stunning Landing Pages with Claude Code",
   "description": "Four tools, one workflow. Everything you need to make Claude Code build landing pages that actually look good.",
   "date": "2026-03-07",
-  "intro": "Everything you need to make Claude Code build landing pages that actually look good. Four tools, one workflow, zero guesswork.",
+  "intro": "Most landing pages built with AI look like AI built them. Generic layouts, weird spacing, no personality. This guide covers the four tools that fix that. Set them up once, and Claude Code starts building pages that actually look polished.",
   "sections": [
     {
       "emoji": "🎨",
       "heading": "ShadCN UI",
       "blocks": [
-        { "type": "text", "content": "ShadCN is a component library that gives you clean, production-ready UI components. Instead of building buttons, cards, and navbars from scratch, you pull them in and customize. It's not a framework you install globally. You copy the components you need into your project." },
+        { "type": "text", "content": "ShadCN is a component library that gives you clean, production-ready UI components. Instead of building buttons, cards, and navbars from scratch, you pull them in and customize. It's not a framework you install globally. You copy the components you need into your project, so you own the code." },
         { "type": "image", "url": "https://i.imgur.com/WCH2mOK.png", "caption": "ShadCN UI component library" },
-        { "type": "link", "text": "Official docs", "url": "https://ui.shadcn.com/" },
-        { "type": "text", "content": "To use it with Claude Code, install the ShadCN MCP server. This lets Claude directly browse and pull components from the ShadCN registry while building your page." },
+        { "type": "link", "text": "ShadCN docs", "url": "https://ui.shadcn.com/" },
+        { "type": "text", "content": "To use it with Claude Code, install the ShadCN MCP server. This lets Claude directly browse and pull components from the ShadCN registry while building your page. No manual copy-pasting." },
         { "type": "heading3", "content": "Install the MCP server" },
         { "type": "text", "content": "Add this to your Claude Code MCP config (~/.claude/mcp.json or your project's .mcp.json):" },
         { "type": "code", "language": "json", "content": "{\n  \"mcpServers\": {\n    \"shadcn\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@anthropic-ai/shadcn-mcp-server@latest\"]\n    }\n  }\n}" }
@@ -22,32 +22,32 @@
       "emoji": "✨",
       "heading": "Magic UI",
       "blocks": [
-        { "type": "text", "content": "Magic UI takes things up a notch. It's built on top of ShadCN and adds animated components, transitions, and effects that make your landing page feel alive. Think: animated gradients, text reveals, marquees, bento grids." },
+        { "type": "text", "content": "Magic UI is built on top of ShadCN and adds the animated components that make a landing page feel alive. Animated gradients, text reveals, marquees, bento grids, border beams. The stuff that takes a page from \"functional\" to \"this looks legit.\"" },
         { "type": "image", "url": "https://i.imgur.com/i4VQsyO.png", "caption": "Magic UI animated components" },
-        { "type": "link", "text": "Official docs", "url": "https://magicui.design/" },
-        { "type": "text", "content": "Same deal. Install the Magic UI MCP server so Claude Code can access the full component library while it builds." },
+        { "type": "link", "text": "Magic UI docs", "url": "https://magicui.design/" },
+        { "type": "text", "content": "Same setup as ShadCN. Install the Magic UI MCP server so Claude Code can browse and pull from the full component library." },
         { "type": "heading3", "content": "Install the MCP server" },
         { "type": "code", "language": "json", "content": "{\n  \"mcpServers\": {\n    \"magicui\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"magic-ui-mcp\"]\n    }\n  }\n}" }
       ]
     },
     {
       "emoji": "🧩",
-      "heading": "Frontend Design Plugin",
+      "heading": "Frontend Design Skill",
       "blocks": [
-        { "type": "text", "content": "This is Claude Code's built-in plugin for frontend work. You've probably seen people talk about it. It gives Claude better context about design patterns, layout principles, and responsive behavior." },
+        { "type": "text", "content": "This is a Claude Code skill that gives Claude better context about design patterns, layout principles, and responsive behavior. Without it, Claude Code writes functional UI. With it, Claude Code writes UI that actually looks designed." },
         { "type": "text", "content": "Install it from within Claude Code:" },
-        { "type": "code", "language": "bash", "content": "/install-plugin frontend-design" },
-        { "type": "text", "content": "Once installed, Claude Code becomes much more intentional about spacing, typography, and visual hierarchy. It stops making things that look like a developer designed them." }
+        { "type": "code", "language": "bash", "content": "/install-skill frontend-design" },
+        { "type": "text", "content": "Once installed, Claude Code becomes much more intentional about spacing, typography, and visual hierarchy. It stops centering everything, starts using whitespace properly, and makes real layout decisions instead of just stacking divs." }
       ]
     },
     {
       "emoji": "👀",
       "heading": "Playwright MCP",
       "blocks": [
-        { "type": "text", "content": "This is the secret weapon. The Playwright MCP server gives Claude Code the ability to open a browser, navigate to your dev server, and take screenshots of your landing page. That means it can see what it built, decide if it looks right, and iterate automatically." },
+        { "type": "text", "content": "This is the secret weapon. Playwright MCP gives Claude Code the ability to open a browser, navigate to your dev server, and take screenshots of what it built. It can see the page, decide if it looks right, and iterate on its own." },
         { "type": "image", "url": "https://i.imgur.com/4rhunqC.png", "caption": "Playwright browser automation" },
-        { "type": "link", "text": "Official docs", "url": "https://playwright.dev/" },
-        { "type": "text", "content": "No more copy-pasting screenshots into chat. Claude Code just looks at the page itself." },
+        { "type": "link", "text": "Playwright docs", "url": "https://playwright.dev/" },
+        { "type": "text", "content": "This is what closes the loop. Without it, Claude Code is building blind. With it, Claude Code reviews its own work and fixes issues before you even see them." },
         { "type": "heading3", "content": "Install the MCP server" },
         { "type": "code", "language": "json", "content": "{\n  \"mcpServers\": {\n    \"playwright\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@anthropic-ai/playwright-mcp-server@latest\"]\n    }\n  }\n}" }
       ]
@@ -61,17 +61,17 @@
       { "type": "bullet", "items": [
         "Start a new project. Tell Claude Code: \"Build me a landing page for [product]. Use ShadCN for the base components and Magic UI for animations.\"",
         "Claude Code pulls components from both libraries using the MCP servers. It knows what's available because it can browse the registries directly.",
-        "The frontend design plugin kicks in to handle layout decisions, spacing, responsive breakpoints, and typography.",
+        "The frontend design skill kicks in to handle layout decisions, spacing, responsive breakpoints, and typography.",
         "Once the first version is built, Playwright MCP opens the page in a browser and screenshots it. Claude Code reviews the screenshot and makes adjustments.",
-        "It keeps iterating. Screenshot, evaluate, fix, screenshot again. You end up with something that actually looks polished without manually tweaking CSS for hours."
+        "It keeps iterating. Screenshot, evaluate, fix, screenshot again. You end up with something polished without manually tweaking CSS for hours."
       ]},
       { "type": "text", "content": "The key insight: Claude Code isn't guessing what the page looks like. It can see it. That changes everything about the quality of output you get." }
     ]
   },
   "proTips": [
     { "title": "Start with ShadCN components, then layer Magic UI on top", "body": "Don't try to use both at once from the start. Get your layout and structure right with ShadCN first. Then go back and swap in Magic UI components where you want animation or visual flair. This keeps things clean and avoids conflicts." },
-    { "title": "Tell Claude Code your dev server URL upfront", "body": "When you start the session, tell Claude Code something like \"my dev server is running at localhost:3000\". That way when Playwright MCP kicks in, it knows exactly where to look. Otherwise it might try to open the wrong URL or ask you." },
-    { "title": "Use Playwright MCP for mobile views too", "body": "You can tell Claude Code to screenshot at different viewport sizes. Ask it to check both desktop and mobile. This catches responsive issues early instead of finding them after you deploy." },
+    { "title": "Tell Claude Code your dev server URL upfront", "body": "When you start the session, say something like \"my dev server is running at localhost:3000\". That way when Playwright MCP kicks in, it knows exactly where to look. Otherwise it might try to open the wrong URL or ask you." },
+    { "title": "Use Playwright MCP for mobile views too", "body": "Tell Claude Code to screenshot at different viewport sizes. Ask it to check both desktop and mobile. This catches responsive issues early instead of finding them after you deploy." },
     { "title": "Pin your component versions", "body": "If you're building something production-grade, pin the ShadCN and Magic UI component versions in your project. MCP servers pull the latest by default, which is great for prototyping but can break things if the API changes." }
   ]
 }

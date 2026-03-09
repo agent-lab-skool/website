@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model PageEvent {
+  id        String   @id @default(cuid())
+  page      String
+  event     String   // "view" or "cta_click"
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([page, event])
+  @@index([createdAt])
+  @@map("page_events")
+}
