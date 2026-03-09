@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import {
   ResponsiveContainer,
-  AreaChart,
+  ComposedChart,
   Area,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
-  BarChart,
-  Bar,
+  Legend,
 } from "recharts";
 
 interface PageStat {
@@ -86,86 +86,62 @@ export function DashboardClient() {
         </div>
       )}
 
-      {/* Charts */}
+      {/* Chart — Views, Clicks & CTR */}
       {data && !loading && data.daily.length > 0 && (
-        <div className="mt-8 space-y-8">
-          {/* Views & Clicks chart */}
-          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="mb-4 text-sm font-medium text-neutral-400">
-              Views & Clicks per day
-            </p>
-            <ResponsiveContainer width="100%" height={240}>
-              <BarChart data={data.daily}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={formatDate}
-                  tick={{ fill: "#737373", fontSize: 11 }}
-                  axisLine={{ stroke: "#ffffff10" }}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fill: "#737373", fontSize: 11 }}
-                  axisLine={false}
-                  tickLine={false}
-                  allowDecimals={false}
-                />
-                <Tooltip
-                  contentStyle={{
-                    background: "#171717",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 8,
-                    fontSize: 12,
-                  }}
-                  labelFormatter={(v) => formatDate(String(v))}
-                />
-                <Bar dataKey="views" fill="#ffffff" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="clicks" fill="#737373" radius={[3, 3, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* CTR chart */}
-          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="mb-4 text-sm font-medium text-neutral-400">
-              Click-through rate (%)
-            </p>
-            <ResponsiveContainer width="100%" height={200}>
-              <AreaChart data={data.daily}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={formatDate}
-                  tick={{ fill: "#737373", fontSize: 11 }}
-                  axisLine={{ stroke: "#ffffff10" }}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fill: "#737373", fontSize: 11 }}
-                  axisLine={false}
-                  tickLine={false}
-                  unit="%"
-                />
-                <Tooltip
-                  contentStyle={{
-                    background: "#171717",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 8,
-                    fontSize: 12,
-                  }}
-                  labelFormatter={(v) => formatDate(String(v))}
-                  formatter={(value) => [`${value}%`, "CTR"]}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="ctr"
-                  stroke="#ffffff"
-                  fill="#ffffff10"
-                  strokeWidth={1.5}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="mt-8 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+          <p className="mb-4 text-sm font-medium text-neutral-400">
+            Daily overview
+          </p>
+          <ResponsiveContainer width="100%" height={300}>
+            <ComposedChart data={data.daily}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" />
+              <XAxis
+                dataKey="date"
+                tickFormatter={formatDate}
+                tick={{ fill: "#737373", fontSize: 11 }}
+                axisLine={{ stroke: "#ffffff10" }}
+                tickLine={false}
+              />
+              <YAxis
+                yAxisId="left"
+                tick={{ fill: "#737373", fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                allowDecimals={false}
+              />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                tick={{ fill: "#737373", fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                unit="%"
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "#171717",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 8,
+                  fontSize: 12,
+                }}
+                labelFormatter={(v) => formatDate(String(v))}
+              />
+              <Legend
+                wrapperStyle={{ fontSize: 11, color: "#737373" }}
+              />
+              <Bar yAxisId="left" dataKey="views" fill="#3b82f6" radius={[3, 3, 0, 0]} />
+              <Bar yAxisId="left" dataKey="clicks" fill="#a855f7" radius={[3, 3, 0, 0]} />
+              <Area
+                yAxisId="right"
+                type="monotone"
+                dataKey="ctr"
+                name="CTR %"
+                stroke="#22c55e"
+                fill="#22c55e15"
+                strokeWidth={1.5}
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
         </div>
       )}
 
