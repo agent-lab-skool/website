@@ -1,0 +1,209 @@
+{
+  "slug": "automate-lead-magnets-claude-code",
+  "title": "How I Automated My Entire Lead Magnet Pipeline with Claude Code",
+  "description": "The exact system that scrapes reels, generates guides, and sets up DM automations, all from a single text message.",
+  "date": "2026-03-09",
+  "intro": "I post 5-10 reels a week. Every one of them needs a lead magnet, a DM automation, and a landing page. Doing that manually? Not happening. So I built a system that does all of it from a single text message. Here's exactly how it works and how you can build something similar.",
+  "sections": [
+    {
+      "emoji": "🔁",
+      "heading": "The Strategy (Why This Works)",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "The funnel is simple. Post a reel about something people want to learn. Tell them to comment a keyword. When they do, an automation DMs them a free guide. At the bottom of that guide, there's a link to your paid community or product."
+        },
+        {
+          "type": "text",
+          "content": "The problem isn't the strategy. Everyone knows comment automations exist. The bottleneck is creating the actual resource for every single video. A unique guide that matches what you talked about, hosted somewhere, hooked up to the automation. That takes time."
+        },
+        {
+          "type": "text",
+          "content": "Unless you automate it."
+        }
+      ]
+    },
+    {
+      "emoji": "🧱",
+      "heading": "The Tech Stack",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "Here's what powers the whole pipeline:"
+        },
+        {
+          "type": "bullet",
+          "items": [
+            "Claude Code as the AI backbone. It orchestrates everything, writes the guide content, and manages the deployment.",
+            "A Telegram bot as the trigger. I text it \"lead magnet\" and it kicks off the whole flow.",
+            "Apify for scraping Instagram reels and pulling transcripts.",
+            "A Next.js site (hosted on Vercel) where the guides actually live.",
+            "Inro for Instagram DM automations. Comment keyword triggers a DM with the guide link."
+          ]
+        },
+        {
+          "type": "text",
+          "content": "You don't need this exact stack. The point is the architecture: an AI agent that can scrape, write, publish, and connect automations. You could swap any piece."
+        }
+      ]
+    },
+    {
+      "emoji": "⚡",
+      "heading": "How the Pipeline Works (Step by Step)",
+      "blocks": [
+        {
+          "type": "heading3",
+          "content": "1. Scrape the latest reel"
+        },
+        {
+          "type": "text",
+          "content": "The bot pulls your most recent Instagram posts via Apify's scraper. It grabs the caption, view count, and most importantly, extracts the CTA keyword (the word people need to comment). Each post uses a different keyword like GUIDE, WEBSITE, AI, or TOOLS."
+        },
+        {
+          "type": "heading3",
+          "content": "2. Transcribe the video"
+        },
+        {
+          "type": "text",
+          "content": "Using Apify's transcript extractor (with Deepgram STT as fallback), the bot gets a full transcript of what you said in the reel. If that fails, it downloads the audio and runs it through OpenAI Whisper."
+        },
+        {
+          "type": "heading3",
+          "content": "3. Generate the guide"
+        },
+        {
+          "type": "text",
+          "content": "This is where Claude Code shines. It takes the transcript, understands the topic, and writes a complete guide. Not a transcript dump. A structured, actionable resource with code blocks, links to official docs, pro tips, and real examples."
+        },
+        {
+          "type": "text",
+          "content": "The guide gets saved as a JSON file and published to a Next.js site. Vercel auto-deploys it in seconds. The page includes strategically placed CTAs that link to your paid offer."
+        },
+        {
+          "type": "heading3",
+          "content": "4. Set up the DM automation"
+        },
+        {
+          "type": "text",
+          "content": "The bot creates a comment-to-DM automation using Inro. When someone comments the keyword on your post, they get a DM with the guide link. No manual setup needed."
+        },
+        {
+          "type": "heading3",
+          "content": "5. Link everything for tracking"
+        },
+        {
+          "type": "text",
+          "content": "The automation's scenario ID gets written back into the guide's config file. This connects the Instagram DMs to the guide's analytics, so you can see the full funnel: DMs sent, page views, and clicks to your paid offer, all in one dashboard."
+        }
+      ]
+    },
+    {
+      "emoji": "🛠️",
+      "heading": "Building Your Own Version",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "You don't need to copy this exactly. The core idea is giving Claude Code (or any AI coding agent) access to your tools and letting it chain them together. Here's a minimal version you could build:"
+        },
+        {
+          "type": "code",
+          "content": "# The basic flow in pseudocode:\n\n1. Scrape your latest content (Apify, custom scraper, RSS)\n2. Extract/transcribe the content\n3. Feed it to an LLM with a guide template\n4. Publish the result (Notion, your website, Carrd)\n5. Hook up the automation (ManyChat, Inro, custom webhook)",
+          "language": "bash"
+        },
+        {
+          "type": "text",
+          "content": "The key tools you'll want:"
+        },
+        {
+          "type": "bullet",
+          "items": [
+            "A way to scrape content (Apify has actors for Instagram, TikTok, YouTube)",
+            "A way to transcribe (Deepgram, Whisper, or Apify's built-in STT)",
+            "An LLM that can write structured content (Claude, GPT-4)",
+            "A hosting solution (Vercel + Next.js is free and fast)",
+            "A DM automation tool (Inro, ManyChat)"
+          ]
+        },
+        {
+          "type": "link",
+          "text": "Apify - Web scraping actors",
+          "url": "https://apify.com/store"
+        },
+        {
+          "type": "link",
+          "text": "Claude Code docs",
+          "url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "type": "link",
+          "text": "Vercel - Deploy for free",
+          "url": "https://vercel.com"
+        },
+        {
+          "type": "link",
+          "text": "Inro - Instagram DM automation",
+          "url": "https://inro.social"
+        }
+      ]
+    },
+    {
+      "emoji": "🤖",
+      "heading": "Why Claude Code Is Perfect for This",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "You could string this together with Zapier or Make. But here's why an AI coding agent is better: it can think. It doesn't just move data between APIs. It reads your transcript, understands the topic, checks what courses or products you have, and writes a guide that actually matches the content."
+        },
+        {
+          "type": "text",
+          "content": "It also adapts. If a transcript is about building landing pages, the guide includes links to ShadCN and Vercel. If it's about database design, you get Supabase links and SQL examples. The agent knows your product and your audience."
+        },
+        {
+          "type": "text",
+          "content": "And because it's running on your own server with full system access, there are no platform limits. No \"you've hit your Zap limit.\" No \"upgrade to connect more than 3 apps.\" Just code running on a VPS."
+        }
+      ]
+    }
+  ],
+  "example": {
+    "emoji": "📊",
+    "heading": "Real Numbers from This System",
+    "blocks": [
+      {
+        "type": "text",
+        "content": "Here's what this pipeline produces in practice:"
+      },
+      {
+        "type": "bullet",
+        "items": [
+          "Time from posting a reel to having a live guide + automation: under 5 minutes",
+          "Each guide is unique, tailored to the specific video content",
+          "Full funnel tracking: DMs sent, guide views, CTA clicks, all in one dashboard",
+          "The system handles everything: scraping, transcription, content generation, publishing, and automation setup"
+        ]
+      },
+      {
+        "type": "text",
+        "content": "The whole point is removing yourself from the bottleneck. You focus on making content. The system handles everything between the post and the conversion."
+      }
+    ]
+  },
+  "proTips": [
+    {
+      "title": "Use different keywords per post",
+      "body": "Don't use the same CTA keyword (like \"AI\") on every video. Use unique ones (GUIDE, WEBSITE, TOOLS) so your automations don't overlap and you can track which posts drive the most engagement."
+    },
+    {
+      "title": "Make the guide genuinely useful",
+      "body": "The biggest mistake with lead magnets is making them feel like a teaser. Your guide should stand on its own. If someone reads it and gets value without ever buying anything, you've done it right. That's what builds trust and gets people to actually check out your paid offer."
+    },
+    {
+      "title": "Host guides on your own domain",
+      "body": "Notion pages work but they look generic. A custom site on your own domain (even a simple Next.js template on Vercel) looks way more professional and lets you add your own analytics, CTAs, and branding."
+    },
+    {
+      "title": "Connect your automations to analytics",
+      "body": "Don't just set and forget. Link your DM automation IDs back to your guide pages so you can see the full funnel. How many DMs were sent? How many people actually opened the guide? How many clicked through to your offer? This data tells you which content actually converts."
+    }
+  ]
+}
