@@ -79,7 +79,7 @@ export function DashboardClient() {
       </div>
 
       {/* Totals */}
-      {data && !loading && (
+      {data?.totals && !loading && (
         <div className="mt-6 grid grid-cols-4 gap-4">
           <StatCard label="DMs sent" value={data.totals.dms.toLocaleString()} />
           <StatCard label="Page views" value={data.totals.views.toLocaleString()} />
@@ -89,7 +89,7 @@ export function DashboardClient() {
       )}
 
       {/* Chart — Views, Clicks & CTR */}
-      {data && !loading && data.daily.length > 0 && (
+      {data?.daily && !loading && data.daily.length > 0 && (
         <div className="mt-8 rounded-xl border border-white/10 bg-white/[0.03] p-4">
           <p className="mb-4 text-sm font-medium text-neutral-400">
             Daily overview
@@ -179,7 +179,7 @@ export function DashboardClient() {
                   Loading...
                 </td>
               </tr>
-            ) : data && data.stats.length > 0 ? (
+            ) : data?.stats && data.stats.length > 0 ? (
               data.stats.map((row) => (
                 <tr
                   key={row.page}
