@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
-import { Inter_Tight, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Geist_Mono, Instrument_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
-
-const interTight = Inter_Tight({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -41,7 +36,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${interTight.variable} ${geistMono.variable} ${instrumentSerif.variable} overflow-x-hidden antialiased`}
+        className={`${geistMono.variable} ${instrumentSerif.variable} overflow-x-hidden antialiased`}
       >
         {children}
         <Analytics />

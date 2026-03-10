@@ -95,7 +95,7 @@ export async function GET(req: NextRequest) {
     dms: pageDms[page] ?? 0,
     views: data.views,
     clicks: data.clicks,
-    rate: data.views > 0 ? ((data.clicks / data.views) * 100).toFixed(1) : "0",
+    rate: (pageDms[page] ?? 0) > 0 ? ((data.clicks / (pageDms[page] ?? 0)) * 100).toFixed(1) : "0",
   }));
 
   // Totals
@@ -139,8 +139,8 @@ export async function GET(req: NextRequest) {
     totals: {
       ...totals,
       rate:
-        totals.views > 0
-          ? ((totals.clicks / totals.views) * 100).toFixed(1)
+        totals.dms > 0
+          ? ((totals.clicks / totals.dms) * 100).toFixed(1)
           : "0",
     },
   });

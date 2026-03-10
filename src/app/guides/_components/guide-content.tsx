@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronDown, Copy, Check } from "lucide-react";
 import type { Guide, GuideBlock, GuideSection } from "../_lib/guides";
 import { SubtleCta, MidCta, BottomCta, FinalCta } from "./guide-cta";
+import { ScrollCta } from "./scroll-cta";
 import { cn } from "@/lib/utils";
 
 function CodeBlock({ content, language }: { content: string; language?: string }) {
@@ -311,6 +312,7 @@ export function GuideContent({ guide }: { guide: Guide }) {
       <FinalCta />
       <TestimonialsSection />
       <FinalCta />
+      <ScrollCta />
     </article>
   );
 }

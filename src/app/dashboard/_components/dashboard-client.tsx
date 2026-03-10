@@ -54,8 +54,12 @@ export function DashboardClient() {
   useEffect(() => {
     setLoading(true);
     fetch(`/api/stats?range=${range}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("fetch failed");
+        return r.json();
+      })
       .then((d) => setData(d))
+      .catch(() => setData(null))
       .finally(() => setLoading(false));
   }, [range]);
 
@@ -81,10 +85,10 @@ export function DashboardClient() {
       {/* Totals */}
       {data?.totals && !loading && (
         <div className="mt-6 grid grid-cols-4 gap-4">
-          <StatCard label="DMs sent" value={data.totals.dms.toLocaleString()} />
-          <StatCard label="Page views" value={data.totals.views.toLocaleString()} />
-          <StatCard label="Skool clicks" value={data.totals.clicks.toLocaleString()} />
-          <StatCard label="CTR" value={`${data.totals.rate}%`} />
+          <StatCard label="DMs sent" value={(data.totals.dms ?? 0).toLocaleString()} />
+          <StatCard label="Page views" value={(data.totals.views ?? 0).toLocaleString()} />
+          <StatCard label="Skool clicks" value={(data.totals.clicks ?? 0).toLocaleString()} />
+          <StatCard label="DM → Click" value={`${data.totals.rate ?? 0}%`} />
         </div>
       )}
 
@@ -165,7 +169,7 @@ export function DashboardClient() {
                 Skool clicks
               </th>
               <th className="px-4 py-3 text-right font-medium text-neutral-400">
-                CTR
+                DM → Click
               </th>
             </tr>
           </thead>
@@ -185,17 +189,24 @@ export function DashboardClient() {
                   key={row.page}
                   className="border-b border-white/5 last:border-0"
                 >
-                  <td className="px-4 py-3 font-mono text-xs text-white">
-                    {row.page}
+                  <td className="px-4 py-3 font-mono text-xs">
+                    <a
+                      href={row.page}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white underline decoration-white/20 underline-offset-4 hover:decoration-white/60 transition-colors"
+                    >
+                      {row.page}
+                    </a>
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
-                    {row.dms.toLocaleString()}
+                    {(row.dms ?? 0).toLocaleString()}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
-                    {row.views.toLocaleString()}
+                    {(row.views ?? 0).toLocaleString()}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
-                    {row.clicks.toLocaleString()}
+                    {(row.clicks ?? 0).toLocaleString()}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
                     {row.rate}%
