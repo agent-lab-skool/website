@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { track } from "@vercel/analytics";
 import { usePathname } from "next/navigation";
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { BorderBeam } from "@/components/ui/border-beam";
 import { SKOOL_URL } from "@/lib/constants/links";
 import { trackCta } from "@/components/tracker";
 
@@ -25,7 +26,7 @@ export function ScrollCta() {
       requestAnimationFrame(() => {
         const scrollRatio =
           window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-        if (scrollRatio >= 0.5) {
+        if (scrollRatio >= 0.25) {
           setVisible(true);
           window.removeEventListener("scroll", onScroll);
         }
@@ -45,7 +46,7 @@ export function ScrollCta() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed bottom-4 left-4 right-4 z-50 rounded-xl border border-white/10 bg-neutral-950 p-5 shadow-2xl sm:left-auto sm:right-6 sm:bottom-6 sm:w-[380px]"
+          className="fixed bottom-4 left-4 right-4 z-50 overflow-hidden rounded-xl border border-white/10 bg-neutral-950 p-5 shadow-2xl sm:left-auto sm:right-6 sm:bottom-6 sm:w-[380px]"
         >
           <button
             onClick={() => setDismissed(true)}
@@ -80,6 +81,7 @@ export function ScrollCta() {
               </a>
             </RainbowButton>
           </div>
+          <BorderBeam duration={8} size={100} colorFrom="#ffffff" colorTo="#666666" />
         </motion.div>
       )}
     </AnimatePresence>
