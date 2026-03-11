@@ -1,4 +1,4 @@
-import { PageTracker } from "@/components/tracker";
+import { PageTracker, EngagementTracker } from "@/components/tracker";
 
 export default function GuidesLayout({
   children,
@@ -11,6 +11,7 @@ export default function GuidesLayout({
         <div className="mx-auto max-w-3xl px-6 pt-12 pb-20">
           {children}
           <PageTracker />
+          <EngagementTracker />
         </div>
       </div>
     </main>

@@ -9,7 +9,8 @@ datasource db {
 model PageEvent {
   id        String   @id @default(cuid())
   page      String
-  event     String   // "view" or "cta_click"
+  event     String
+  value     Float?
   createdAt DateTime @default(now()) @map("created_at")
 
   @@index([page, event])

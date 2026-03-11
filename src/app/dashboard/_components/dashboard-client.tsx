@@ -19,6 +19,10 @@ interface PageStat {
   views: number;
   clicks: number;
   rate: string;
+  avgTimeOnPage: number;
+  bounceRate: number;
+  avgTimeToCta: number;
+  avgScrollDepth: number;
 }
 
 interface DailyPoint {
@@ -28,11 +32,22 @@ interface DailyPoint {
   ctr: number;
 }
 
+interface Totals {
+  dms: number;
+  views: number;
+  clicks: number;
+  rate: string;
+  avgTimeOnPage: number;
+  bounceRate: number;
+  avgTimeToCta: number;
+  avgScrollDepth: number;
+}
+
 interface StatsResponse {
   range: string;
   stats: PageStat[];
   daily: DailyPoint[];
-  totals: { dms: number; views: number; clicks: number; rate: string };
+  totals: Totals;
 }
 
 const ranges = [
@@ -44,6 +59,13 @@ const ranges = [
 function formatDate(dateStr: string) {
   const d = new Date(dateStr + "T00:00:00");
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function formatTime(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return s > 0 ? `${m}m ${s}s` : `${m}m`;
 }
 
 export function DashboardClient() {
@@ -84,12 +106,20 @@ export function DashboardClient() {
 
       {/* Totals */}
       {data?.totals && !loading && (
-        <div className="mt-6 grid grid-cols-4 gap-4">
-          <StatCard label="DMs sent" value={(data.totals.dms ?? 0).toLocaleString()} />
-          <StatCard label="Page views" value={(data.totals.views ?? 0).toLocaleString()} />
-          <StatCard label="Skool clicks" value={(data.totals.clicks ?? 0).toLocaleString()} />
-          <StatCard label="DM → Click" value={`${data.totals.rate ?? 0}%`} />
-        </div>
+        <>
+          <div className="mt-6 grid grid-cols-4 gap-4">
+            <StatCard label="DMs sent" value={(data.totals.dms ?? 0).toLocaleString()} />
+            <StatCard label="Page views" value={(data.totals.views ?? 0).toLocaleString()} />
+            <StatCard label="Skool clicks" value={(data.totals.clicks ?? 0).toLocaleString()} />
+            <StatCard label="DM → Click" value={`${data.totals.rate ?? 0}%`} />
+          </div>
+          <div className="mt-4 grid grid-cols-4 gap-4">
+            <StatCard label="Avg. time on page" value={formatTime(data.totals.avgTimeOnPage ?? 0)} />
+            <StatCard label="Bounce rate" value={`${data.totals.bounceRate ?? 0}%`} />
+            <StatCard label="Avg. time to CTA" value={formatTime(data.totals.avgTimeToCta ?? 0)} />
+            <StatCard label="Avg. scroll depth" value={`${data.totals.avgScrollDepth ?? 0}%`} />
+          </div>
+        </>
       )}
 
       {/* Chart — Views, Clicks & CTR */}
@@ -171,13 +201,22 @@ export function DashboardClient() {
               <th className="px-4 py-3 text-right font-medium text-neutral-400">
                 DM → Click
               </th>
+              <th className="px-4 py-3 text-right font-medium text-neutral-400">
+                Avg. time
+              </th>
+              <th className="px-4 py-3 text-right font-medium text-neutral-400">
+                Bounce
+              </th>
+              <th className="px-4 py-3 text-right font-medium text-neutral-400">
+                Time to CTA
+              </th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
                 <td
-                  colSpan={5}
+                  colSpan={8}
                   className="px-4 py-8 text-center text-neutral-500"
                 >
                   Loading...
@@ -211,12 +250,21 @@ export function DashboardClient() {
                   <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
                     {row.rate}%
                   </td>
+                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
+                    {formatTime(row.avgTimeOnPage ?? 0)}
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
+                    {row.bounceRate ?? 0}%
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
+                    {formatTime(row.avgTimeToCta ?? 0)}
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
                 <td
-                  colSpan={5}
+                  colSpan={8}
                   className="px-4 py-8 text-center text-neutral-500"
                 >
                   No data yet. Views will appear as traffic comes in.

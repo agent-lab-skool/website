@@ -262,7 +262,7 @@ function TestimonialsSection() {
 
 export function GuideContent({ guide }: { guide: Guide }) {
   const searchParams = useSearchParams();
-  const hideCta = searchParams.get("hideCTA") === "true";
+  const hideCta = searchParams.has("hide_cta");
   const midPoint = Math.floor(guide.sections.length / 2);
 
   return (
@@ -310,15 +310,11 @@ export function GuideContent({ guide }: { guide: Guide }) {
       )}
 
       {/* Bottom CTA with testimonials as proof */}
-      {!hideCta && (
-        <>
-          <div className="mt-10 h-px bg-white/10" />
-          <BottomCta />
-          <FinalCta />
-          <TestimonialsSection />
-          <FinalCta />
-        </>
-      )}
+      <div className="mt-10 h-px bg-white/10" />
+      {!hideCta && <BottomCta />}
+      {!hideCta && <FinalCta />}
+      <TestimonialsSection />
+      {!hideCta && <FinalCta />}
       {!hideCta && <ScrollCta />}
     </article>
   );

@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
   const since = new Date(Date.now() - days * 86_400_000);
 
   // Fetch DB events and Inro scenarios in parallel
-  const [events, allEvents, inroScenarios] = await Promise.all([
+  const [events, allEvents, inroScenarios, avgTimeOnPage, avgTimeToCta] = await Promise.all([
     prisma.pageEvent.groupBy({
       by: ["page", "event"] as const,
       where: { createdAt: { gte: since } },
@@ -49,6 +49,16 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "asc" },
     }),
     fetchInroScenarios(),
+    prisma.pageEvent.groupBy({
+      by: ["page"],
+      where: { event: "time_on_page", createdAt: { gte: since } },
+      _avg: { value: true },
+    }),
+    prisma.pageEvent.groupBy({
+      by: ["page"],
+      where: { event: "time_to_cta", createdAt: { gte: since } },
+      _avg: { value: true },
+    }),
   ]);
 
   // Build scenario ID → metrics lookup
@@ -78,35 +88,74 @@ export async function GET(req: NextRequest) {
     totalDms += dms;
   }
 
-  // Shape into { page: { views, clicks } }
-  const pages: Record<string, { views: number; clicks: number }> = {};
+  // Build avg lookups
+  const avgTimeMap: Record<string, number> = {};
+  for (const row of avgTimeOnPage) {
+    avgTimeMap[row.page] = row._avg.value ?? 0;
+  }
+  const avgCtaMap: Record<string, number> = {};
+  for (const row of avgTimeToCta) {
+    avgCtaMap[row.page] = row._avg.value ?? 0;
+  }
+
+  // Shape into { page: { views, clicks, scroll counts } }
+  const pages: Record<string, { views: number; clicks: number; scroll25: number; scroll50: number; scroll75: number; scroll100: number }> = {};
 
   for (const row of events) {
     const page = row.page;
     const event = row.event;
     const count = typeof row._count === "number" ? row._count : 0;
-    if (!pages[page]) pages[page] = { views: 0, clicks: 0 };
+    if (!pages[page]) pages[page] = { views: 0, clicks: 0, scroll25: 0, scroll50: 0, scroll75: 0, scroll100: 0 };
     if (event === "view") pages[page].views = count;
     if (event === "cta_click") pages[page].clicks = count;
+    if (event === "scroll_25") pages[page].scroll25 = count;
+    if (event === "scroll_50") pages[page].scroll50 = count;
+    if (event === "scroll_75") pages[page].scroll75 = count;
+    if (event === "scroll_100") pages[page].scroll100 = count;
   }
 
-  const stats = Object.entries(pages).map(([page, data]) => ({
-    page,
-    dms: pageDms[page] ?? 0,
-    views: data.views,
-    clicks: data.clicks,
-    rate: (pageDms[page] ?? 0) > 0 ? ((data.clicks / (pageDms[page] ?? 0)) * 100).toFixed(1) : "0",
-  }));
+  const stats = Object.entries(pages).map(([page, data]) => {
+    const bounceRate = data.views > 0
+      ? Number((((data.views - data.scroll25) / data.views) * 100).toFixed(1))
+      : 0;
+    const avgScrollDepth = data.views > 0
+      ? Number((((data.scroll25 * 25 + data.scroll50 * 25 + data.scroll75 * 25 + data.scroll100 * 25) / data.views)).toFixed(1))
+      : 0;
+    return {
+      page,
+      dms: pageDms[page] ?? 0,
+      views: data.views,
+      clicks: data.clicks,
+      rate: (pageDms[page] ?? 0) > 0 ? ((data.clicks / (pageDms[page] ?? 0)) * 100).toFixed(1) : "0",
+      avgTimeOnPage: Math.round(avgTimeMap[page] ?? 0),
+      bounceRate,
+      avgTimeToCta: Math.round(avgCtaMap[page] ?? 0),
+      avgScrollDepth: Math.min(avgScrollDepth, 100),
+    };
+  });
 
   // Totals
-  const totals = stats.reduce(
+  const totalStats = stats.reduce(
     (acc, s) => ({
       dms: acc.dms + s.dms,
       views: acc.views + s.views,
       clicks: acc.clicks + s.clicks,
+      timeSum: acc.timeSum + s.avgTimeOnPage * s.views,
+      ctaTimeSum: acc.ctaTimeSum + s.avgTimeToCta * s.clicks,
+      scrollDepthSum: acc.scrollDepthSum + s.avgScrollDepth * s.views,
+      scroll25Sum: acc.scroll25Sum + (s.views > 0 ? s.views - Math.round(s.bounceRate * s.views / 100) : 0),
     }),
-    { dms: totalDms, views: 0, clicks: 0 }
+    { dms: totalDms, views: 0, clicks: 0, timeSum: 0, ctaTimeSum: 0, scrollDepthSum: 0, scroll25Sum: 0 }
   );
+  const totals = {
+    dms: totalStats.dms,
+    views: totalStats.views,
+    clicks: totalStats.clicks,
+    avgTimeOnPage: totalStats.views > 0 ? Math.round(totalStats.timeSum / totalStats.views) : 0,
+    bounceRate: totalStats.views > 0 ? Number((((totalStats.views - totalStats.scroll25Sum) / totalStats.views) * 100).toFixed(1)) : 0,
+    avgTimeToCta: totalStats.clicks > 0 ? Math.round(totalStats.ctaTimeSum / totalStats.clicks) : 0,
+    avgScrollDepth: totalStats.views > 0 ? Number((totalStats.scrollDepthSum / totalStats.views).toFixed(1)) : 0,
+  };
 
   // Daily breakdown for charts
   const dailyMap: Record<string, { views: number; clicks: number }> = {};
