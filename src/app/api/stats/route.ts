@@ -111,6 +111,13 @@ export async function GET(req: NextRequest) {
     if (event === "scroll_100") pages[page].scroll100 = count;
   }
 
+  // Build page → scenarioIds lookup
+  const pageScenarioIds: Record<string, number[]> = {};
+  for (const guide of guides) {
+    if (!guide.inroScenarioIds?.length) continue;
+    pageScenarioIds[`/guides/${guide.slug}`] = guide.inroScenarioIds;
+  }
+
   const stats = Object.entries(pages).map(([page, data]) => {
     const bounceRate = data.views > 0
       ? Number((((data.views - data.scroll25) / data.views) * 100).toFixed(1))
@@ -128,6 +135,7 @@ export async function GET(req: NextRequest) {
       bounceRate,
       avgTimeToCta: Math.round(avgCtaMap[page] ?? 0),
       avgScrollDepth: Math.min(avgScrollDepth, 100),
+      inroScenarioIds: pageScenarioIds[page] ?? [],
     };
   });
 

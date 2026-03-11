@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Send,
   Eye,
@@ -10,6 +11,8 @@ import {
   TrendingDown,
   Timer,
   GalleryVerticalEnd,
+  Zap,
+  ExternalLink,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -33,6 +36,7 @@ interface PageStat {
   bounceRate: number;
   avgTimeToCta: number;
   avgScrollDepth: number;
+  inroScenarioIds: number[];
 }
 
 interface DailyPoint {
@@ -193,10 +197,13 @@ export function DashboardClient() {
 
       {/* Table */}
       <div className="mt-8 rounded-xl border border-white/10 overflow-hidden">
-        <div className="overflow-x-auto">
+        <ScrollArea className="w-full">
           <table className="w-full text-sm" style={{ minWidth: 860 }}>
             <thead>
               <tr className="border-b border-white/10 bg-white/[0.03]">
+                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap w-[60px]">
+                  <ColHeader icon={Zap} label="" />
+                </th>
                 <th className="px-5 py-3.5 text-left font-medium text-neutral-500 w-[280px]">
                   <ColHeader icon={null} label="Page" />
                 </th>
@@ -232,13 +239,16 @@ export function DashboardClient() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="px-5 py-10 text-center text-neutral-500">
+                  <td colSpan={9} className="px-5 py-10 text-center text-neutral-500">
                     Loading...
                   </td>
                 </tr>
               ) : data?.stats && data.stats.length > 0 ? (
                 data.stats.map((row) => (
                   <tr key={row.page} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
+                    <td className="px-5 py-4 text-right">
+                      <AutomationsCell ids={row.inroScenarioIds ?? []} />
+                    </td>
                     <td className="px-5 py-4 max-w-[280px]">
                       <a
                         href={row.page}
@@ -280,7 +290,7 @@ export function DashboardClient() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="px-5 py-10 text-center text-neutral-500">
+                  <td colSpan={9} className="px-5 py-10 text-center text-neutral-500">
                     No data yet. Views will appear as traffic comes in.
                   </td>
                 </tr>
@@ -288,6 +298,40 @@ export function DashboardClient() {
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  );
+}
+
+const INRO_BASE = "https://app.inro.social/scenarios";
+
+function AutomationsCell({ ids }: { ids: number[] }) {
+  if (ids.length === 0) {
+    return <span className="text-xs text-neutral-600">—</span>;
+  }
+  return (
+    <div className="group/auto relative inline-block">
+      <button className="flex items-center gap-1 text-xs tabular-nums text-neutral-400 hover:text-white transition-colors">
+        <Zap className="size-3" />
+        <span>{ids.length}</span>
+      </button>
+      {/* Popover */}
+      <div className="pointer-events-none group-hover/auto:pointer-events-auto opacity-0 group-hover/auto:opacity-100 transition-opacity duration-150 absolute right-0 bottom-full mb-2 z-50 w-52 rounded-lg border border-white/10 bg-neutral-950 shadow-xl p-2">
+        <p className="px-2 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+          Automations
+        </p>
+        {ids.map((id) => (
+          <a
+            key={id}
+            href={`${INRO_BASE}/${id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-xs text-neutral-300 hover:bg-white/[0.06] hover:text-white transition-colors"
+          >
+            <span className="font-mono">#{id}</span>
+            <ExternalLink className="size-3 shrink-0 text-neutral-600" />
+          </a>
+        ))}
       </div>
     </div>
   );
