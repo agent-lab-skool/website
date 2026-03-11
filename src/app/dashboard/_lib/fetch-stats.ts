@@ -72,7 +72,7 @@ export async function fetchStats(range: string): Promise<StatsData> {
     for (const id of guide.inroScenarioIds) {
       const scenario = scenarioMap.get(id);
       if (!scenario) continue;
-      dms += scenario.metrics.executions.total;
+      dms += scenario.metrics?.executions?.total ?? 0;
     }
     pageDms[page] = dms;
     totalDms += dms;
