@@ -192,99 +192,113 @@ export function DashboardClient() {
       )}
 
       {/* Table */}
-      <div className="mt-8 overflow-hidden rounded-xl border border-white/10">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-white/10 bg-white/[0.03]">
-              <th className="px-4 py-3 text-left font-medium text-neutral-400">
-                Page
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-neutral-400">
-                DMs
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-neutral-400">
-                Views
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-neutral-400">
-                Skool clicks
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-neutral-400">
-                <span className="flex items-center justify-end gap-1">DM <ArrowRight className="size-3" /> Click</span>
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-neutral-400">
-                Avg. time
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-neutral-400">
-                Bounce
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-neutral-400">
-                Time to CTA
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td
-                  colSpan={8}
-                  className="px-4 py-8 text-center text-neutral-500"
-                >
-                  Loading...
-                </td>
+      <div className="mt-8 rounded-xl border border-white/10 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm" style={{ minWidth: 860 }}>
+            <thead>
+              <tr className="border-b border-white/10 bg-white/[0.03]">
+                <th className="px-5 py-3.5 text-left font-medium text-neutral-500 w-[280px]">
+                  <ColHeader icon={null} label="Page" />
+                </th>
+                {/* Funnel group */}
+                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
+                  <ColHeader icon={Send} label="DMs" />
+                </th>
+                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
+                  <ColHeader icon={Eye} label="Views" />
+                </th>
+                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
+                  <ColHeader icon={MousePointerClick} label="Clicks" />
+                </th>
+                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap border-r border-white/[0.06]">
+                  <span className="flex items-center justify-end gap-1">
+                    <Send className="size-3 shrink-0" />
+                    <ArrowRight className="size-3 shrink-0" />
+                    <MousePointerClick className="size-3 shrink-0" />
+                  </span>
+                </th>
+                {/* Engagement group */}
+                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
+                  <ColHeader icon={Clock} label="Avg. time" />
+                </th>
+                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
+                  <ColHeader icon={TrendingDown} label="Bounce" />
+                </th>
+                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
+                  <ColHeader icon={Timer} label="→ CTA" />
+                </th>
               </tr>
-            ) : data?.stats && data.stats.length > 0 ? (
-              data.stats.map((row) => (
-                <tr
-                  key={row.page}
-                  className="border-b border-white/5 last:border-0"
-                >
-                  <td className="px-4 py-3 font-mono text-xs">
-                    <a
-                      href={row.page}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-white underline decoration-white/20 underline-offset-4 hover:decoration-white/60 transition-colors"
-                    >
-                      {row.page}
-                    </a>
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
-                    {(row.dms ?? 0).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
-                    {(row.views ?? 0).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
-                    {(row.clicks ?? 0).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
-                    {row.rate}%
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
-                    {formatTime(row.avgTimeOnPage ?? 0)}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
-                    {row.bounceRate ?? 0}%
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-neutral-300">
-                    {formatTime(row.avgTimeToCta ?? 0)}
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={8} className="px-5 py-10 text-center text-neutral-500">
+                    Loading...
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={8}
-                  className="px-4 py-8 text-center text-neutral-500"
-                >
-                  No data yet. Views will appear as traffic comes in.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              ) : data?.stats && data.stats.length > 0 ? (
+                data.stats.map((row) => (
+                  <tr key={row.page} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
+                    <td className="px-5 py-4 max-w-[280px]">
+                      <a
+                        href={row.page}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-xs text-neutral-300 underline decoration-white/10 underline-offset-4 hover:text-white hover:decoration-white/40 transition-colors truncate block"
+                      >
+                        {row.page}
+                      </a>
+                    </td>
+                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                      {(row.dms ?? 0).toLocaleString()}
+                    </td>
+                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                      {(row.views ?? 0).toLocaleString()}
+                    </td>
+                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                      {(row.clicks ?? 0).toLocaleString()}
+                    </td>
+                    <td className="px-5 py-4 text-right tabular-nums whitespace-nowrap border-r border-white/[0.06]">
+                      <span className={`inline-block rounded-md px-2 py-0.5 text-xs font-medium tabular-nums ${
+                        Number(row.rate) >= 10 ? "bg-white/10 text-white" :
+                        Number(row.rate) >= 5  ? "bg-white/[0.06] text-neutral-200" :
+                                                  "text-neutral-500"
+                      }`}>
+                        {row.rate}%
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                      {formatTime(row.avgTimeOnPage ?? 0)}
+                    </td>
+                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                      {row.bounceRate ?? 0}%
+                    </td>
+                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                      {formatTime(row.avgTimeToCta ?? 0)}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8} className="px-5 py-10 text-center text-neutral-500">
+                    No data yet. Views will appear as traffic comes in.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
+  );
+}
+
+function ColHeader({ icon: Icon, label }: { icon: React.ElementType | null; label: string }) {
+  return (
+    <span className="inline-flex items-center justify-end gap-1.5">
+      {Icon && <Icon className="size-3 shrink-0" />}
+      <span>{label}</span>
+    </span>
   );
 }
 
