@@ -305,7 +305,7 @@ export function DashboardClient() {
   );
 }
 
-const INRO_BASE = "https://app.inro.social/scenarios";
+const INRO_BASE = "https://app.inro.social/public/scenarios";
 
 function AutomationsCell({ ids }: { ids: number[] }) {
   if (ids.length === 0) {
