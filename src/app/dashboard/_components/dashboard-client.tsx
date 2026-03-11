@@ -1,6 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  Send,
+  Eye,
+  MousePointerClick,
+  ArrowRight,
+  Clock,
+  TrendingDown,
+  Timer,
+  GalleryVerticalEnd,
+} from "lucide-react";
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -108,16 +118,16 @@ export function DashboardClient() {
       {data?.totals && !loading && (
         <>
           <div className="mt-6 grid grid-cols-4 gap-4">
-            <StatCard label="DMs sent" value={(data.totals.dms ?? 0).toLocaleString()} />
-            <StatCard label="Page views" value={(data.totals.views ?? 0).toLocaleString()} />
-            <StatCard label="Skool clicks" value={(data.totals.clicks ?? 0).toLocaleString()} />
-            <StatCard label="DM → Click" value={`${data.totals.rate ?? 0}%`} />
+            <StatCard icon={Send} label="DMs sent (lifetime)" value={(data.totals.dms ?? 0).toLocaleString()} />
+            <StatCard icon={Eye} label="Page views" value={(data.totals.views ?? 0).toLocaleString()} />
+            <StatCard icon={MousePointerClick} label="Skool clicks" value={(data.totals.clicks ?? 0).toLocaleString()} />
+            <StatCard icon={ArrowRight} label="DM → Click" value={`${data.totals.rate ?? 0}%`} />
           </div>
           <div className="mt-4 grid grid-cols-4 gap-4">
-            <StatCard label="Avg. time on page" value={formatTime(data.totals.avgTimeOnPage ?? 0)} />
-            <StatCard label="Bounce rate" value={`${data.totals.bounceRate ?? 0}%`} />
-            <StatCard label="Avg. time to CTA" value={formatTime(data.totals.avgTimeToCta ?? 0)} />
-            <StatCard label="Avg. scroll depth" value={`${data.totals.avgScrollDepth ?? 0}%`} />
+            <StatCard icon={Clock} label="Avg. time on page" value={formatTime(data.totals.avgTimeOnPage ?? 0)} />
+            <StatCard icon={TrendingDown} label="Bounce rate" value={`${data.totals.bounceRate ?? 0}%`} />
+            <StatCard icon={Timer} label="Avg. time to CTA" value={formatTime(data.totals.avgTimeToCta ?? 0)} />
+            <StatCard icon={GalleryVerticalEnd} label="Avg. scroll depth" value={`${data.totals.avgScrollDepth ?? 0}%`} />
           </div>
         </>
       )}
@@ -199,7 +209,7 @@ export function DashboardClient() {
                 Skool clicks
               </th>
               <th className="px-4 py-3 text-right font-medium text-neutral-400">
-                DM → Click
+                <span className="flex items-center justify-end gap-1">DM <ArrowRight className="size-3" /> Click</span>
               </th>
               <th className="px-4 py-3 text-right font-medium text-neutral-400">
                 Avg. time
@@ -278,10 +288,13 @@ export function DashboardClient() {
   );
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function StatCard({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
   return (
     <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4">
-      <p className="text-xs text-neutral-500">{label}</p>
+      <div className="flex items-center gap-1.5">
+        <Icon className="size-3 text-neutral-500" />
+        <p className="text-xs text-neutral-500">{label}</p>
+      </div>
       <p className="mt-1 text-2xl font-medium tabular-nums text-white">
         {value}
       </p>

@@ -69,7 +69,6 @@ export async function GET(req: NextRequest) {
 
   // Build guide slug → DMs sent lookup
   const guides = getAllGuides();
-  const use7d = range === "7d";
   let totalDms = 0;
   const pageDms: Record<string, number> = {};
 
@@ -80,9 +79,7 @@ export async function GET(req: NextRequest) {
     for (const id of guide.inroScenarioIds) {
       const scenario = scenarioMap.get(id);
       if (!scenario) continue;
-      dms += use7d
-        ? scenario.metrics.executions.last_7_days
-        : scenario.metrics.executions.total;
+      dms += scenario.metrics.executions.total;
     }
     pageDms[page] = dms;
     totalDms += dms;
