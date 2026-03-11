@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Instrument_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
 const geistMono = Geist_Mono({
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body
         className={`${geistMono.variable} ${instrumentSerif.variable} overflow-x-hidden antialiased`}
       >
+        <NextTopLoader color="#ffffff" showSpinner={false} height={2} />
         {children}
         <Analytics />
         <SpeedInsights />

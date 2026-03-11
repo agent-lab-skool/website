@@ -1,8 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import {
   Send,
   Eye,
@@ -14,6 +24,10 @@ import {
   GalleryVerticalEnd,
   Zap,
   ExternalLink,
+  CalendarDays,
+  ChevronUp,
+  ChevronDown,
+  ChevronsUpDown,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -38,6 +52,7 @@ interface PageStat {
   avgTimeToCta: number;
   avgScrollDepth: number;
   inroScenarioIds: number[];
+  date?: string | null;
 }
 
 interface DailyPoint {
@@ -58,18 +73,15 @@ interface Totals {
   avgScrollDepth: number;
 }
 
-interface StatsResponse {
+export interface StatsData {
   range: string;
   stats: PageStat[];
   daily: DailyPoint[];
   totals: Totals;
 }
 
-const ranges = [
-  { label: "7 days", value: "7d" },
-  { label: "30 days", value: "30d" },
-  { label: "All time", value: "all" },
-];
+type SortKey = "date" | "page" | "dms" | "views" | "clicks" | "rate" | "avgTimeOnPage" | "bounceRate" | "avgTimeToCta";
+type SortDir = "asc" | "desc";
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr + "T00:00:00");
@@ -83,44 +95,54 @@ function formatTime(seconds: number): string {
   return s > 0 ? `${m}m ${s}s` : `${m}m`;
 }
 
-export function DashboardClient() {
-  const [range, setRange] = useState("7d");
-  const [data, setData] = useState<StatsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+function sortStats(stats: PageStat[], key: SortKey, dir: SortDir): PageStat[] {
+  return [...stats].sort((a, b) => {
+    let av: string | number = 0;
+    let bv: string | number = 0;
 
-  useEffect(() => {
-    setLoading(true);
-    fetch(`/api/stats?range=${range}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("fetch failed");
-        return r.json();
-      })
-      .then((d) => setData(d))
-      .catch(() => setData(null))
-      .finally(() => setLoading(false));
-  }, [range]);
+    if (key === "date") {
+      av = a.date ?? "";
+      bv = b.date ?? "";
+      // nulls last
+      if (!av && !bv) return 0;
+      if (!av) return 1;
+      if (!bv) return -1;
+    } else if (key === "page") {
+      av = a.page;
+      bv = b.page;
+    } else if (key === "rate") {
+      av = Number(a.rate);
+      bv = Number(b.rate);
+    } else {
+      av = (a[key] as number) ?? 0;
+      bv = (b[key] as number) ?? 0;
+    }
+
+    if (av < bv) return dir === "asc" ? -1 : 1;
+    if (av > bv) return dir === "asc" ? 1 : -1;
+    return 0;
+  });
+}
+
+export function DashboardContent({ data }: { data: StatsData }) {
+  const [sortKey, setSortKey] = useState<SortKey>("date");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
+
+  function handleSort(key: SortKey) {
+    if (key === sortKey) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("desc");
+    }
+  }
+
+  const sortedStats = sortStats(data.stats, sortKey, sortDir);
 
   return (
-    <div className="mt-8">
-      {/* Range selector */}
-      <div className="flex gap-1 rounded-lg border border-white/10 bg-white/[0.03] p-1 w-fit">
-        {ranges.map((r) => (
-          <button
-            key={r.value}
-            onClick={() => setRange(r.value)}
-            className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-              range === r.value
-                ? "bg-white text-black"
-                : "text-neutral-400 hover:text-white"
-            }`}
-          >
-            {r.label}
-          </button>
-        ))}
-      </div>
-
+    <div>
       {/* Totals */}
-      {data?.totals && !loading && (
+      {data.totals && (
         <>
           <div className="mt-6 grid grid-cols-4 gap-4">
             <StatCard icon={Send} label="DMs sent (lifetime)" value={(data.totals.dms ?? 0).toLocaleString()} />
@@ -138,7 +160,7 @@ export function DashboardClient() {
       )}
 
       {/* Chart — Views, Clicks & CTR */}
-      {data?.daily && !loading && data.daily.length > 0 && (
+      {data.daily.length > 0 && (
         <div className="mt-8 rounded-xl border border-white/10 bg-white/[0.03] p-4">
           <p className="mb-4 text-sm font-medium text-neutral-400">
             Daily overview
@@ -199,58 +221,69 @@ export function DashboardClient() {
       {/* Table */}
       <div className="mt-8 rounded-xl border border-white/10 overflow-hidden">
         <ScrollArea className="w-full">
-          <table className="w-full text-sm" style={{ minWidth: 860 }}>
-            <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03]">
-                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap w-[60px]">
-                  <ColHeader icon={Zap} label="" />
-                </th>
-                <th className="px-5 py-3.5 text-left font-medium text-neutral-500 w-[280px]">
-                  <ColHeader icon={null} label="Page" />
-                </th>
+          <table className="w-full text-sm" style={{ minWidth: 960 }}>
+            <TableHeader className="[&_tr]:border-white/10">
+              <TableRow className="border-white/10 bg-white/[0.03] hover:bg-white/[0.03]">
+                {/* Identity group */}
+                <TableHead className="px-5 py-3.5 text-left font-medium text-neutral-500">
+                  <ColHeader icon={CalendarDays} label="Updated" sortKey="date" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+                </TableHead>
+                <TableHead className="px-5 py-3.5 text-left font-medium text-neutral-500">
+                  <ColHeader icon={Zap} label="Automations" sortKey="date" currentSort={null} currentDir={sortDir} onSort={() => {}} />
+                </TableHead>
+                <TableHead className="px-5 py-3.5 text-left font-medium text-neutral-500 w-[260px] border-r border-white/[0.06]">
+                  <ColHeader icon={null} label="Page" sortKey="page" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+                </TableHead>
                 {/* Funnel group */}
-                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
-                  <ColHeader icon={Send} label="DMs" />
-                </th>
-                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
-                  <ColHeader icon={Eye} label="Views" />
-                </th>
-                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
-                  <ColHeader icon={MousePointerClick} label="Clicks" />
-                </th>
-                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap border-r border-white/[0.06]">
-                  <span className="flex items-center justify-end gap-1">
-                    <Send className="size-3 shrink-0" />
-                    <ArrowRight className="size-3 shrink-0" />
-                    <MousePointerClick className="size-3 shrink-0" />
-                  </span>
-                </th>
+                <TableHead className="px-5 py-3.5 text-left font-medium text-neutral-500">
+                  <ColHeader icon={Send} label="DMs" sortKey="dms" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+                </TableHead>
+                <TableHead className="px-5 py-3.5 text-left font-medium text-neutral-500">
+                  <ColHeader icon={Eye} label="Views" sortKey="views" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+                </TableHead>
+                <TableHead className="px-5 py-3.5 text-left font-medium text-neutral-500">
+                  <ColHeader icon={MousePointerClick} label="Clicks" sortKey="clicks" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+                </TableHead>
+                <TableHead className="px-5 py-3.5 text-left font-medium text-neutral-500 border-r border-white/[0.06]">
+                  <ColHeader
+                    icon={null}
+                    label=""
+                    sortKey="rate"
+                    currentSort={sortKey}
+                    currentDir={sortDir}
+                    onSort={handleSort}
+                    customLabel={
+                      <span className="flex items-center justify-start gap-1">
+                        <Send className="size-3 shrink-0" />
+                        <ArrowRight className="size-3 shrink-0" />
+                        <MousePointerClick className="size-3 shrink-0" />
+                      </span>
+                    }
+                  />
+                </TableHead>
                 {/* Engagement group */}
-                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
-                  <ColHeader icon={Clock} label="Avg. time" />
-                </th>
-                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
-                  <ColHeader icon={TrendingDown} label="Bounce" />
-                </th>
-                <th className="px-5 py-3.5 text-right font-medium text-neutral-500 whitespace-nowrap">
-                  <ColHeader icon={Timer} label="→ CTA" />
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={9} className="px-5 py-10 text-center text-neutral-500">
-                    Loading...
-                  </td>
-                </tr>
-              ) : data?.stats && data.stats.length > 0 ? (
-                data.stats.map((row) => (
-                  <tr key={row.page} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
-                    <td className="px-5 py-4 text-right">
+                <TableHead className="px-5 py-3.5 text-left font-medium text-neutral-500">
+                  <ColHeader icon={Clock} label="Avg. time" sortKey="avgTimeOnPage" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+                </TableHead>
+                <TableHead className="px-5 py-3.5 text-left font-medium text-neutral-500">
+                  <ColHeader icon={TrendingDown} label="Bounce" sortKey="bounceRate" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+                </TableHead>
+                <TableHead className="px-5 py-3.5 text-left font-medium text-neutral-500">
+                  <ColHeader icon={Timer} label="→ CTA" sortKey="avgTimeToCta" currentSort={sortKey} currentDir={sortDir} onSort={handleSort} />
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sortedStats.length > 0 ? (
+                sortedStats.map((row) => (
+                  <TableRow key={row.page} className="border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                    <TableCell className="px-5 py-4 text-left tabular-nums text-neutral-500 text-xs">
+                      {row.date ? formatDate(row.date) : <span className="text-neutral-700">—</span>}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-right">
                       <AutomationsCell ids={row.inroScenarioIds ?? []} />
-                    </td>
-                    <td className="px-5 py-4 max-w-[280px]">
+                    </TableCell>
+                    <TableCell className="px-5 py-4 max-w-[260px] border-r border-white/[0.06]">
                       <a
                         href={row.page}
                         target="_blank"
@@ -259,44 +292,38 @@ export function DashboardClient() {
                       >
                         {row.page}
                       </a>
-                    </td>
-                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-left tabular-nums text-neutral-300">
                       {(row.dms ?? 0).toLocaleString()}
-                    </td>
-                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-left tabular-nums text-neutral-300">
                       {(row.views ?? 0).toLocaleString()}
-                    </td>
-                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-left tabular-nums text-neutral-300">
                       {(row.clicks ?? 0).toLocaleString()}
-                    </td>
-                    <td className="px-5 py-4 text-right tabular-nums whitespace-nowrap border-r border-white/[0.06]">
-                      <span className={`inline-block rounded-md px-2 py-0.5 text-xs font-medium tabular-nums ${
-                        Number(row.rate) >= 10 ? "bg-white/10 text-white" :
-                        Number(row.rate) >= 5  ? "bg-white/[0.06] text-neutral-200" :
-                                                  "text-neutral-500"
-                      }`}>
-                        {row.rate}%
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-left tabular-nums text-neutral-300 border-r border-white/[0.06]">
+                      {row.rate}%
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-left tabular-nums text-neutral-300">
                       {formatTime(row.avgTimeOnPage ?? 0)}
-                    </td>
-                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-left tabular-nums text-neutral-300">
                       {row.bounceRate ?? 0}%
-                    </td>
-                    <td className="px-5 py-4 text-right tabular-nums text-neutral-300 whitespace-nowrap">
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-left tabular-nums text-neutral-300">
                       {formatTime(row.avgTimeToCta ?? 0)}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))
               ) : (
-                <tr>
-                  <td colSpan={9} className="px-5 py-10 text-center text-neutral-500">
+                <TableRow>
+                  <TableCell colSpan={10} className="px-5 py-10 text-center text-neutral-500">
                     No data yet. Views will appear as traffic comes in.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
+            </TableBody>
           </table>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
@@ -340,18 +367,61 @@ function AutomationsCell({ ids }: { ids: number[] }) {
   );
 }
 
-function ColHeader({ icon: Icon, label }: { icon: React.ElementType | null; label: string }) {
-  return (
-    <span className="inline-flex items-center justify-end gap-1.5">
+function ColHeader({
+  icon: Icon,
+  label,
+  sortKey,
+  currentSort,
+  currentDir,
+  onSort,
+  align = "left",
+  customLabel,
+}: {
+  icon: React.ElementType | null;
+  label: string;
+  sortKey: SortKey;
+  currentSort: SortKey | null;
+  currentDir: SortDir;
+  onSort: (key: SortKey) => void;
+  align?: "left" | "right";
+  customLabel?: React.ReactNode;
+}) {
+  const isActive = currentSort === sortKey;
+  const isClickable = currentSort !== null;
+
+  const SortIcon = isActive
+    ? currentDir === "asc" ? ChevronUp : ChevronDown
+    : ChevronsUpDown;
+
+  const content = (
+    <span className={`inline-flex items-center gap-1.5 ${align === "left" ? "justify-start" : "justify-end"}`}>
       {Icon && <Icon className="size-3 shrink-0" />}
-      <span>{label}</span>
+      {customLabel ?? (label && <span>{label}</span>)}
+      {isClickable && (
+        <SortIcon className={`size-3 shrink-0 transition-colors ${isActive ? "text-neutral-300" : "text-neutral-600"}`} />
+      )}
     </span>
+  );
+
+  if (!isClickable) return content;
+
+  return (
+    <button
+      onClick={() => onSort(sortKey)}
+      className={`inline-flex items-center gap-1.5 cursor-pointer select-none transition-colors hover:text-neutral-200 ${
+        isActive ? "text-neutral-300" : ""
+      } ${align === "left" ? "justify-start" : "justify-end w-full"}`}
+    >
+      {Icon && <Icon className="size-3 shrink-0" />}
+      {customLabel ?? (label && <span>{label}</span>)}
+      <SortIcon className={`size-3 shrink-0 transition-colors ${isActive ? "text-neutral-300" : "text-neutral-600"}`} />
+    </button>
   );
 }
 
 function StatCard({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4">
+    <Card className="gap-0 border-white/10 bg-white/[0.03] px-4 py-4 shadow-none">
       <div className="flex items-center gap-1.5">
         <Icon className="size-3 text-neutral-500" />
         <p className="text-xs text-neutral-500">{label}</p>
@@ -359,6 +429,6 @@ function StatCard({ icon: Icon, label, value }: { icon: React.ElementType; label
       <p className="mt-1 text-2xl font-medium tabular-nums text-white">
         {value}
       </p>
-    </div>
+    </Card>
   );
 }

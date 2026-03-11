@@ -2,11 +2,19 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ChevronDown, Copy, Check } from "lucide-react";
+import { Copy, Check } from "lucide-react";
 import type { Guide, GuideBlock, GuideSection } from "../_lib/guides";
 import { SubtleCta, MidCta, BottomCta, FinalCta } from "./guide-cta";
 import { ScrollCta } from "./scroll-cta";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
 function CodeBlock({ content, language }: { content: string; language?: string }) {
   const [copied, setCopied] = useState(false);
@@ -23,9 +31,11 @@ function CodeBlock({ content, language }: { content: string; language?: string }
         <span className="text-xs font-mono text-neutral-500">
           {language || "code"}
         </span>
-        <button
+        <Button
+          variant="ghost"
+          size="xs"
           onClick={handleCopy}
-          className="flex items-center gap-1 text-xs text-neutral-500 transition-colors hover:text-white"
+          className="h-auto gap-1 p-0 text-xs text-neutral-500 hover:bg-transparent hover:text-white"
         >
           {copied ? (
             <>
@@ -38,43 +48,11 @@ function CodeBlock({ content, language }: { content: string; language?: string }
               copy
             </>
           )}
-        </button>
+        </Button>
       </div>
       <pre className="overflow-x-auto bg-white/[0.02] p-4 text-sm leading-relaxed">
         <code className="font-mono text-neutral-300">{content}</code>
       </pre>
-    </div>
-  );
-}
-
-function ProTip({ title, body }: { title: string; body: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-b border-white/5 last:border-0">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center gap-2 py-3 text-left text-sm font-medium text-neutral-200 transition-colors hover:text-white"
-      >
-        <ChevronDown
-          className={cn(
-            "size-4 shrink-0 text-neutral-500 transition-transform duration-200",
-            open && "rotate-180"
-          )}
-        />
-        {title}
-      </button>
-      <div
-        className={cn(
-          "grid transition-[grid-template-rows] duration-200 ease-out",
-          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-        )}
-      >
-        <div className="overflow-hidden">
-          <p className="pb-4 pl-6 text-sm leading-relaxed text-neutral-400">
-            {body}
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
@@ -272,7 +250,7 @@ export function GuideContent({ guide }: { guide: Guide }) {
         {guide.intro}
       </p>
 
-      <div className="mt-8 h-px bg-white/10" />
+      <Separator className="mt-8 bg-white/10" />
 
       {/* Sections with CTAs inserted */}
       {guide.sections.map((section, i) => (
@@ -286,7 +264,7 @@ export function GuideContent({ guide }: { guide: Guide }) {
       {/* Example section */}
       {guide.example && (
         <>
-          <div className="mt-10 h-px bg-white/10" />
+          <Separator className="mt-10 bg-white/10" />
           {renderSection(guide.example)}
         </>
       )}
@@ -297,20 +275,33 @@ export function GuideContent({ guide }: { guide: Guide }) {
       {/* Pro Tips */}
       {guide.proTips && guide.proTips.length > 0 && (
         <>
-          <div className="mt-10 h-px bg-white/10" />
+          <Separator className="mt-10 bg-white/10" />
           <h2 className="mt-12 mb-4 text-xl font-medium tracking-tight text-white">
             💡 Pro Tips
           </h2>
-          <div className="rounded-xl border border-white/10 bg-white/[0.02] px-5">
+          <Accordion
+            type="multiple"
+            className="rounded-xl border border-white/10 bg-white/[0.02] px-5"
+          >
             {guide.proTips.map((tip, i) => (
-              <ProTip key={i} title={tip.title} body={tip.body} />
+              <AccordionItem key={i} value={`tip-${i}`} className="border-white/5">
+                <AccordionTrigger className={cn(
+                  "py-3 text-sm font-medium text-neutral-200",
+                  "hover:text-white hover:no-underline"
+                )}>
+                  {tip.title}
+                </AccordionTrigger>
+                <AccordionContent className="pl-6 text-neutral-400">
+                  {tip.body}
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </>
       )}
 
       {/* Bottom CTA with testimonials as proof */}
-      <div className="mt-10 h-px bg-white/10" />
+      <Separator className="mt-10 bg-white/10" />
       {!hideCta && <BottomCta />}
       {!hideCta && <FinalCta />}
       {!hideCta && <TestimonialsSection />}
