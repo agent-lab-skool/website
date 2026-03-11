@@ -313,7 +313,7 @@ export function GuideContent({ guide }: { guide: Guide }) {
       <div className="mt-10 h-px bg-white/10" />
       {!hideCta && <BottomCta />}
       {!hideCta && <FinalCta />}
-      <TestimonialsSection />
+      {!hideCta && <TestimonialsSection />}
       {!hideCta && <FinalCta />}
       {!hideCta && <ScrollCta />}
     </article>
