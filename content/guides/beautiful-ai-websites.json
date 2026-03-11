@@ -37,6 +37,11 @@
           "content": "ShadCN is a component library with clean, production-ready UI pieces. Buttons, cards, navigation, forms, dialogs. All pre-styled, all customizable. When Claude Code has the ShadCN MCP server installed, it can browse and pull these components directly into your project."
         },
         {
+          "type": "image",
+          "url": "https://i.imgur.com/XX3imM0.png",
+          "caption": "ShadCN UI: production-ready components you can browse and pull directly"
+        },
+        {
           "type": "link",
           "text": "ShadCN component library",
           "url": "https://ui.shadcn.com/"
@@ -72,6 +77,11 @@
           "content": "Use ShadCN NavigationMenu for the header. Add a Sheet\ncomponent for mobile navigation. Use the Command component\nfor the search feature."
         },
         {
+          "type": "image",
+          "url": "https://i.imgur.com/fnjipwk.png",
+          "caption": "ShadCN docs: browse components so you can reference them by name in your prompts"
+        },
+        {
           "type": "text",
           "content": "The pattern: name the specific components you want. Claude has access to the full ShadCN registry through the MCP server, so it knows exactly what's available. The more specific you are, the better the output."
         }
@@ -84,6 +94,11 @@
         {
           "type": "text",
           "content": "ShadCN gives you solid components. Magic UI makes them feel alive. It's built on top of ShadCN and adds animated gradients, text reveals, marquees, shimmer effects, bento grids, border beams. The stuff that makes someone look at your site and think \"this is legit.\""
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/8DbNwQq.png",
+          "caption": "Magic UI: 150+ animated components built on top of ShadCN"
         },
         {
           "type": "link",
