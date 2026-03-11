@@ -1,0 +1,271 @@
+{
+  "slug": "beautiful-ai-websites",
+  "title": "Stop Building Ugly AI Websites",
+  "description": "The exact prompts and workflow to make Claude Code build websites that actually look designed.",
+  "date": "2026-03-11",
+  "intro": "You've seen the difference. Some people use Claude Code and get generic, boxy websites that scream \"AI made this.\" Others get polished, professional pages. The difference isn't talent. It's knowing what tools to use and, more importantly, how to talk to Claude Code when you're using them.",
+  "sections": [
+    {
+      "emoji": "🤮",
+      "heading": "Why Most AI Websites Look Bad",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "Out of the box, Claude Code builds functional websites. It writes clean HTML and CSS. The code works. But the design? It defaults to safe, generic patterns. Everything is centered. Every section has the same padding. The buttons are plain. There's no visual rhythm."
+        },
+        {
+          "type": "text",
+          "content": "That's not Claude's fault. It's working with what it has. If you don't give it access to a design system, it's going to build everything from scratch. And \"from scratch\" in AI terms means \"the most average version of every component.\""
+        },
+        {
+          "type": "text",
+          "content": "The fix is three tools that each solve a different part of the problem. ShadCN gives Claude a library of polished base components. Magic UI adds the animations and visual flair. And the Frontend Design skill teaches Claude how to think about layout and spacing like an actual designer."
+        },
+        {
+          "type": "text",
+          "content": "But installing the tools is only half the story. How you prompt Claude Code when using them is what actually determines the output quality."
+        }
+      ]
+    },
+    {
+      "emoji": "🧱",
+      "heading": "ShadCN: Your Design Foundation",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "ShadCN is a component library with clean, production-ready UI pieces. Buttons, cards, navigation, forms, dialogs. All pre-styled, all customizable. When Claude Code has the ShadCN MCP server installed, it can browse and pull these components directly into your project."
+        },
+        {
+          "type": "link",
+          "text": "ShadCN component library",
+          "url": "https://ui.shadcn.com/"
+        },
+        {
+          "type": "text",
+          "content": "The problem it solves: without ShadCN, Claude writes its own button styles, its own card layouts, its own form inputs. They work, but they look like a developer designed them (not a compliment). ShadCN gives Claude a consistent, professional baseline to build on."
+        },
+        {
+          "type": "heading3",
+          "content": "How to prompt with ShadCN"
+        },
+        {
+          "type": "text",
+          "content": "Don't just say \"build me a landing page.\" Be specific about which ShadCN components you want. Here's what actually works:"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "Build a pricing section with 3 tiers using ShadCN Card components.\nUse the Badge component for the \"Popular\" tag.\nAdd a ShadCN Button for each CTA. Make the middle tier\nstand out with a different variant."
+        },
+        {
+          "type": "text",
+          "content": "Compare that to just saying \"build me a pricing section.\" When you reference specific components, Claude pulls them from the ShadCN registry and you get consistent, polished results instead of custom-coded guesswork."
+        },
+        {
+          "type": "text",
+          "content": "Another good one:"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "Use ShadCN NavigationMenu for the header. Add a Sheet\ncomponent for mobile navigation. Use the Command component\nfor the search feature."
+        },
+        {
+          "type": "text",
+          "content": "The pattern: name the specific components you want. Claude has access to the full ShadCN registry through the MCP server, so it knows exactly what's available. The more specific you are, the better the output."
+        }
+      ]
+    },
+    {
+      "emoji": "✨",
+      "heading": "Magic UI: The \"Wow\" Layer",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "ShadCN gives you solid components. Magic UI makes them feel alive. It's built on top of ShadCN and adds animated gradients, text reveals, marquees, shimmer effects, bento grids, border beams. The stuff that makes someone look at your site and think \"this is legit.\""
+        },
+        {
+          "type": "link",
+          "text": "Magic UI components",
+          "url": "https://magicui.design/"
+        },
+        {
+          "type": "text",
+          "content": "The problem it solves: ShadCN alone gives you a clean, professional page. But it can still feel static. Magic UI adds the micro-interactions and animations that separate \"looks decent\" from \"looks like a real product.\""
+        },
+        {
+          "type": "heading3",
+          "content": "How to prompt with Magic UI"
+        },
+        {
+          "type": "text",
+          "content": "The key is being specific about which effects you want and where. Don't say \"make it look cool.\" Tell Claude exactly what kind of visual treatment each section needs:"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "For the hero section, use Magic UI's AnimatedGradientText for\nthe main headline. Add a ShimmerButton for the CTA. Use the\nBorderBeam component on the product screenshot card."
+        },
+        {
+          "type": "text",
+          "content": "For social proof and logos:"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "Add a Marquee component from Magic UI to show the client logos.\nUse NumberTicker for the stats section (\"500+ users\" etc).\nKeep the animation speed subtle, not distracting."
+        },
+        {
+          "type": "text",
+          "content": "A common mistake: using Magic UI everywhere. Animations are like seasoning. A little makes the dish better. Too much ruins it. Use Magic UI on your hero section, one or two key sections, and your CTA. Leave the rest clean with ShadCN."
+        }
+      ]
+    },
+    {
+      "emoji": "🎨",
+      "heading": "Frontend Design Skill: Teaching Claude to Think Like a Designer",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "This is the most underrated piece. ShadCN and Magic UI give Claude better components. The Frontend Design skill gives Claude better judgment. It changes how Claude thinks about whitespace, typography, hierarchy, and responsive layout."
+        },
+        {
+          "type": "text",
+          "content": "Install it in Claude Code with:"
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "content": "/install-skill frontend-design"
+        },
+        {
+          "type": "text",
+          "content": "Without this skill, Claude tends to cram things together, use uniform spacing everywhere, and ignore visual hierarchy. With it, Claude starts making real design decisions. More whitespace between sections. Larger headings with smaller subtext. Proper visual flow from top to bottom."
+        },
+        {
+          "type": "heading3",
+          "content": "How to use it"
+        },
+        {
+          "type": "text",
+          "content": "Every time you start building a page, run the skill first:"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "/frontend-design I'm building a SaaS landing page for a\nproject management tool. What's the best layout approach\nfor the hero, features, and pricing sections?"
+        },
+        {
+          "type": "text",
+          "content": "Claude will come back with a structured plan. Section order, layout patterns, spacing recommendations, responsive breakpoints. Then you build based on that plan instead of just winging it."
+        },
+        {
+          "type": "text",
+          "content": "You can also use it mid-build to gut-check your design:"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "/frontend-design Look at the current page. The features\nsection feels flat. How can I improve the visual hierarchy\nand make each feature stand out more?"
+        },
+        {
+          "type": "text",
+          "content": "Think of it as having a designer on call. You're still making the decisions, but you've got someone to bounce ideas off of."
+        }
+      ]
+    },
+    {
+      "emoji": "🔥",
+      "heading": "Putting It All Together: The Workflow",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "Here's the actual workflow I use every time I build a page with Claude Code. This is the order that gets the best results."
+        },
+        {
+          "type": "heading3",
+          "content": "Step 1: Plan with the Frontend Design skill"
+        },
+        {
+          "type": "text",
+          "content": "Before writing any code, run /frontend-design and describe what you're building. Get a layout plan. This takes 30 seconds and saves you from rebuilding sections later."
+        },
+        {
+          "type": "heading3",
+          "content": "Step 2: Build the structure with ShadCN"
+        },
+        {
+          "type": "text",
+          "content": "Now build the page section by section. Reference specific ShadCN components in your prompts. Get the layout, content structure, and base styling right first. Don't worry about animations yet."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "Build the hero section based on the layout plan. Use ShadCN\nButton for the CTA, Badge for the announcement tag. Keep it\nclean and minimal for now."
+        },
+        {
+          "type": "heading3",
+          "content": "Step 3: Layer in Magic UI"
+        },
+        {
+          "type": "text",
+          "content": "Once the page looks solid structurally, go back and add Magic UI components to the key sections. Hero, one feature section, and the final CTA are usually enough."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "Now enhance the hero: swap the heading for AnimatedGradientText,\nadd a ShimmerButton for the CTA, and put a BorderBeam on the\nscreenshot card. Don't touch the other sections yet."
+        },
+        {
+          "type": "heading3",
+          "content": "Step 4: Review and refine"
+        },
+        {
+          "type": "text",
+          "content": "Look at what Claude built. If something feels off, use /frontend-design again to get specific feedback. Then make targeted adjustments instead of starting over."
+        },
+        {
+          "type": "text",
+          "content": "The whole process usually takes 10 to 15 minutes for a full landing page. Most of that is you deciding what you want, not Claude building it."
+        }
+      ]
+    }
+  ],
+  "example": {
+    "emoji": "💬",
+    "heading": "Real Prompt Example: SaaS Landing Page",
+    "blocks": [
+      {
+        "type": "text",
+        "content": "Here's an actual prompt sequence you could use to build a complete landing page. Copy and adapt this for your own projects."
+      },
+      {
+        "type": "code",
+        "language": "text",
+        "content": "Prompt 1 (Planning):\n/frontend-design I'm building a landing page for \"TaskFlow,\"\na project management tool for small teams. I need a hero,\n3-feature section, testimonials, pricing, and footer.\nWhat's the best layout approach?\n\nPrompt 2 (Structure):\nBuild the TaskFlow landing page based on the layout plan.\nUse ShadCN Card for feature cards, NavigationMenu for the\nheader, and Button for all CTAs. Use a dark theme with\nblue accents.\n\nPrompt 3 (Polish):\nEnhance the hero with Magic UI AnimatedGradientText for\nthe headline and ShimmerButton for the primary CTA. Add a\nMarquee for the \"trusted by\" logo strip. Add NumberTicker\nfor the stats (\"10k+ teams\" etc). Keep everything else\nclean."
+      },
+      {
+        "type": "text",
+        "content": "Three prompts. That's it. The result will be dramatically better than a single \"build me a landing page\" prompt because Claude has the right tools AND the right context at each step."
+      }
+    ]
+  },
+  "proTips": [
+    {
+      "title": "Browse the component libraries yourself first",
+      "body": "Spend 5 minutes on ui.shadcn.com and magicui.design before you start. Know what components exist so you can name them in your prompts. The more specific you are, the better Claude's output."
+    },
+    {
+      "title": "Build section by section, not all at once",
+      "body": "Don't ask Claude to build an entire page in one prompt. Do the hero first, then features, then pricing. You'll get much better results because Claude can focus on one section at a time and you can course-correct between sections."
+    },
+    {
+      "title": "Use Magic UI sparingly",
+      "body": "Pick 2 to 3 sections max for animations. Hero and CTA are the obvious ones. If every section is animated, nothing stands out and the page feels overwhelming."
+    },
+    {
+      "title": "Always specify a color palette",
+      "body": "Tell Claude your colors upfront. \"Dark background, blue accent, white text\" is enough. Without this, Claude picks different colors for different sections and the page looks inconsistent."
+    }
+  ]
+}
