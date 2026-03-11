@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Send,
   Eye,
@@ -297,7 +298,8 @@ export function DashboardClient() {
               )}
             </tbody>
           </table>
-        </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </div>
     </div>
   );
@@ -310,13 +312,14 @@ function AutomationsCell({ ids }: { ids: number[] }) {
     return <span className="text-xs text-neutral-600">—</span>;
   }
   return (
-    <div className="group/auto relative inline-block">
-      <button className="flex items-center gap-1 text-xs tabular-nums text-neutral-400 hover:text-white transition-colors">
-        <Zap className="size-3" />
-        <span>{ids.length}</span>
-      </button>
-      {/* Popover */}
-      <div className="pointer-events-none group-hover/auto:pointer-events-auto opacity-0 group-hover/auto:opacity-100 transition-opacity duration-150 absolute right-0 bottom-full mb-2 z-50 w-52 rounded-lg border border-white/10 bg-neutral-950 shadow-xl p-2">
+    <Popover>
+      <PopoverTrigger asChild>
+        <button className="flex items-center gap-1 text-xs tabular-nums text-neutral-400 hover:text-white transition-colors">
+          <Zap className="size-3" />
+          <span>{ids.length}</span>
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-48 p-2 bg-neutral-950 border-white/10">
         <p className="px-2 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-neutral-500">
           Automations
         </p>
@@ -332,8 +335,8 @@ function AutomationsCell({ ids }: { ids: number[] }) {
             <ExternalLink className="size-3 shrink-0 text-neutral-600" />
           </a>
         ))}
-      </div>
-    </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 
