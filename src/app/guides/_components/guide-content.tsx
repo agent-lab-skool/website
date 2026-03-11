@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ChevronDown, Copy, Check } from "lucide-react";
 import type { Guide, GuideBlock, GuideSection } from "../_lib/guides";
 import { SubtleCta, MidCta, BottomCta, FinalCta } from "./guide-cta";
@@ -260,6 +261,8 @@ function TestimonialsSection() {
 }
 
 export function GuideContent({ guide }: { guide: Guide }) {
+  const searchParams = useSearchParams();
+  const hideCta = searchParams.get("hideCTA") === "true";
   const midPoint = Math.floor(guide.sections.length / 2);
 
   return (
@@ -275,8 +278,8 @@ export function GuideContent({ guide }: { guide: Guide }) {
       {guide.sections.map((section, i) => (
         <div key={i}>
           {renderSection(section)}
-          {i === 0 && <SubtleCta />}
-          {i === midPoint && i !== 0 && <MidCta />}
+          {!hideCta && i === 0 && <SubtleCta />}
+          {!hideCta && i === midPoint && i !== 0 && <MidCta />}
         </div>
       ))}
 
@@ -289,7 +292,7 @@ export function GuideContent({ guide }: { guide: Guide }) {
       )}
 
       {/* Mid CTA if only 1-2 sections */}
-      {guide.sections.length <= 2 && <MidCta />}
+      {!hideCta && guide.sections.length <= 2 && <MidCta />}
 
       {/* Pro Tips */}
       {guide.proTips && guide.proTips.length > 0 && (
@@ -307,12 +310,16 @@ export function GuideContent({ guide }: { guide: Guide }) {
       )}
 
       {/* Bottom CTA with testimonials as proof */}
-      <div className="mt-10 h-px bg-white/10" />
-      <BottomCta />
-      <FinalCta />
-      <TestimonialsSection />
-      <FinalCta />
-      <ScrollCta />
+      {!hideCta && (
+        <>
+          <div className="mt-10 h-px bg-white/10" />
+          <BottomCta />
+          <FinalCta />
+          <TestimonialsSection />
+          <FinalCta />
+        </>
+      )}
+      {!hideCta && <ScrollCta />}
     </article>
   );
 }

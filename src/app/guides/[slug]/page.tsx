@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllGuides, getGuide } from "../_lib/guides";
@@ -56,7 +57,9 @@ export default async function GuidePage({
         </div>
       </div>
 
-      <GuideContent guide={guide} />
+      <Suspense>
+        <GuideContent guide={guide} />
+      </Suspense>
     </>
   );
 }
