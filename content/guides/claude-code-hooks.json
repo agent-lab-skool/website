@@ -212,5 +212,8 @@
       "title": "Stack hooks in the right order",
       "body": "If you're running both Prettier and ESLint, put Prettier first. Prettier handles formatting, ESLint handles logic. Running them in the wrong order means ESLint might flag formatting issues that Prettier would have fixed."
     }
+  ],
+  "inroScenarioIds": [
+    20990
   ]
 }
