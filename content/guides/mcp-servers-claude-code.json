@@ -248,5 +248,6 @@
       "title": "Check the MCP Servers course for deep dives",
       "body": "Each of these servers has way more features than what's covered here. Playwright has 60+ configurable options, Maestro supports gesture testing, and Peekaboo can chain multi-step desktop automations. The full course walks through advanced setups for each one."
     }
-  ]
+  ],
+  "inroScenarioIds": [21007]
 }
