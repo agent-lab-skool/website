@@ -1,0 +1,252 @@
+{
+  "slug": "mcp-servers-claude-code",
+  "title": "3 MCP Servers That Make Claude Code Feel Human",
+  "description": "Playwright for browsers, Maestro for mobile, Peekaboo for your Mac. Three MCP servers that give Claude Code eyes and hands.",
+  "date": "2026-03-12",
+  "intro": "Most people use Claude Code as a text-in, text-out tool. But with the right MCP servers, it can actually see what it's building, interact with browsers, test mobile apps, and control your entire Mac. These three servers turn Claude Code from a code generator into something that feels like a real collaborator.",
+  "sections": [
+    {
+      "emoji": "🎭",
+      "heading": "Playwright MCP: Browser Control",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "This is the one most people know about. Playwright MCP is Microsoft's official MCP server that gives Claude Code direct control over a browser. It can navigate pages, click buttons, fill forms, take screenshots, and read page content."
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/Ui1eZHf.png",
+          "caption": "Playwright MCP on GitHub: Microsoft's official browser automation server"
+        },
+        {
+          "type": "text",
+          "content": "The clever part is how it works. Instead of sending screenshots back and forth (which is slow and expensive), Playwright MCP uses the browser's accessibility tree. That's a structured representation of the page, just a few KB of data. Claude reads it like a document, not an image. Way faster, way cheaper."
+        },
+        {
+          "type": "heading3",
+          "content": "What you can do with it"
+        },
+        {
+          "type": "bullet",
+          "items": [
+            "Build a web app and have Claude test it in a real browser as it goes",
+            "Scrape data from websites that need JavaScript to render",
+            "Create a feedback loop where Claude builds UI, screenshots it, and iterates",
+            "Automate browser workflows (form filling, navigation, data extraction)"
+          ]
+        },
+        {
+          "type": "heading3",
+          "content": "Setup"
+        },
+        {
+          "type": "text",
+          "content": "One command to add it to Claude Code:"
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "content": "claude mcp add playwright npx @playwright/mcp@latest"
+        },
+        {
+          "type": "text",
+          "content": "Or add it to your MCP config JSON directly:"
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "content": "{\n  \"mcpServers\": {\n    \"playwright\": {\n      \"command\": \"npx\",\n      \"args\": [\"@playwright/mcp@latest\"]\n    }\n  }\n}"
+        },
+        {
+          "type": "text",
+          "content": "You can customize the browser (Chrome, Firefox, WebKit, Edge), viewport size, headless mode, and even load saved auth sessions. Run it with --headless for background automation or let it open a visible browser so you can watch Claude work."
+        },
+        {
+          "type": "link",
+          "text": "Playwright MCP on GitHub",
+          "url": "https://github.com/microsoft/playwright-mcp"
+        }
+      ]
+    },
+    {
+      "emoji": "📱",
+      "heading": "Maestro MCP: Mobile App Testing",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "This is the one people have been asking for. Maestro is already a popular framework for mobile E2E testing, and now it has an MCP server that lets Claude Code control iOS and Android emulators directly."
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/s953uZz.png",
+          "caption": "Maestro MCP: mobile testing straight from Claude Code"
+        },
+        {
+          "type": "text",
+          "content": "Think of it as Playwright, but for mobile apps. Claude can tap buttons, scroll through feeds, type into inputs, and verify that your app actually works on a phone. No more building blind and hoping it looks right on mobile."
+        },
+        {
+          "type": "heading3",
+          "content": "What you can do with it"
+        },
+        {
+          "type": "bullet",
+          "items": [
+            "Build a React Native or Flutter app and have Claude test it on a simulator",
+            "Write and debug UI tests automatically",
+            "Verify app behavior across different screen sizes",
+            "Automate repetitive mobile testing workflows"
+          ]
+        },
+        {
+          "type": "heading3",
+          "content": "Setup"
+        },
+        {
+          "type": "text",
+          "content": "Install Maestro first (it bundles the MCP server):"
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "content": "curl -Ls \"https://get.maestro.mobile.dev\" | bash"
+        },
+        {
+          "type": "text",
+          "content": "Then add it to Claude Code:"
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "content": "claude mcp add maestro maestro mcp"
+        },
+        {
+          "type": "text",
+          "content": "You'll need either Android Studio (for Android emulators) or Xcode (for iOS simulators) installed. Maestro handles the rest. The MCP server exposes all of Maestro's commands as tools that Claude can call."
+        },
+        {
+          "type": "link",
+          "text": "Maestro MCP docs",
+          "url": "https://docs.maestro.dev/get-started/maestro-mcp"
+        },
+        {
+          "type": "link",
+          "text": "Maestro on GitHub",
+          "url": "https://github.com/mobile-dev-inc/Maestro"
+        }
+      ]
+    },
+    {
+      "emoji": "👀",
+      "heading": "Peekaboo: Full Mac Control",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "This one is wild. Peekaboo is a macOS MCP server that lets Claude Code see and control your entire Mac. Screenshots, clicking, typing, scrolling, opening apps, managing windows. It's basically giving Claude eyes and hands on your desktop."
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/pWvgTLI.png",
+          "caption": "Peekaboo on GitHub: full macOS GUI automation for AI agents"
+        },
+        {
+          "type": "text",
+          "content": "Built by Peter Steinberger (steipete), Peekaboo captures pixel-accurate screenshots and uses AI vision models to understand what's on screen. It can then interact with any app through native macOS accessibility APIs. Click buttons, type text, navigate menus, manage windows."
+        },
+        {
+          "type": "heading3",
+          "content": "What you can do with it"
+        },
+        {
+          "type": "bullet",
+          "items": [
+            "Let Claude see your Figma designs and build matching code",
+            "Automate any Mac app that doesn't have an API",
+            "Screenshot your running app, have Claude analyze the UI, and fix issues",
+            "Chain complex workflows across multiple desktop apps"
+          ]
+        },
+        {
+          "type": "heading3",
+          "content": "Setup"
+        },
+        {
+          "type": "text",
+          "content": "Install via Homebrew:"
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "content": "brew install steipete/tap/peekaboo"
+        },
+        {
+          "type": "text",
+          "content": "Then add the MCP server:"
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "content": "{\n  \"mcpServers\": {\n    \"peekaboo\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@steipete/peekaboo\"]\n    }\n  }\n}"
+        },
+        {
+          "type": "text",
+          "content": "You'll need to grant Screen Recording and Accessibility permissions in System Settings. Peekaboo also supports multiple AI providers (GPT-5.1, Claude 4.x, Gemini 2.5, local Ollama models) for the visual analysis step, so you can pick whichever you prefer."
+        },
+        {
+          "type": "link",
+          "text": "Peekaboo on GitHub",
+          "url": "https://github.com/steipete/Peekaboo"
+        }
+      ]
+    },
+    {
+      "emoji": "⚡",
+      "heading": "How They Work Together",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "Each of these servers handles a different surface. Playwright covers the browser, Maestro covers mobile, and Peekaboo covers everything else on your Mac. You can run all three at once."
+        },
+        {
+          "type": "text",
+          "content": "Here's a real workflow: you're building a web app with a mobile companion. Claude writes the code, uses Playwright to test the web version in a browser, uses Maestro to verify the mobile app on a simulator, and uses Peekaboo to screenshot your design tool for reference. All without you switching contexts."
+        },
+        {
+          "type": "text",
+          "content": "The pattern that makes this powerful is the feedback loop. When Claude can see the result of what it built, it catches its own mistakes. Without these servers, you're the feedback loop. You have to look at the screen, describe what's wrong, and paste it back. With them, Claude does that automatically."
+        },
+        {
+          "type": "heading3",
+          "content": "Full MCP config with all three"
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "content": "{\n  \"mcpServers\": {\n    \"playwright\": {\n      \"command\": \"npx\",\n      \"args\": [\"@playwright/mcp@latest\"]\n    },\n    \"maestro\": {\n      \"command\": \"maestro\",\n      \"args\": [\"mcp\"]\n    },\n    \"peekaboo\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@steipete/peekaboo\"]\n    }\n  }\n}"
+        },
+        {
+          "type": "text",
+          "content": "Drop that into your Claude Code settings and you're set. Claude will automatically use whichever server makes sense for the task."
+        }
+      ]
+    }
+  ],
+  "proTips": [
+    {
+      "title": "Start with Playwright, it's the most useful",
+      "body": "If you're only going to set up one MCP server, make it Playwright. The browser feedback loop alone is a game changer. Claude can build a page, screenshot it, see that a button is misaligned, and fix it without you saying anything."
+    },
+    {
+      "title": "Use headless mode for speed",
+      "body": "Both Playwright and Maestro support headless mode where the browser/emulator runs in the background. It's faster because there's no rendering overhead. Turn off headless mode when you want to watch Claude work in real time."
+    },
+    {
+      "title": "Peekaboo needs macOS 15+",
+      "body": "Peekaboo only works on Mac (it uses native macOS APIs). If you're on Linux or Windows, Playwright and Maestro still work great. Peekaboo is the cherry on top for Mac users."
+    },
+    {
+      "title": "Check the MCP Servers course for deep dives",
+      "body": "Each of these servers has way more features than what's covered here. Playwright has 60+ configurable options, Maestro supports gesture testing, and Peekaboo can chain multi-step desktop automations. The full course walks through advanced setups for each one."
+    }
+  ]
+}
