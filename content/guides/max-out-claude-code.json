@@ -1,0 +1,222 @@
+{
+  "slug": "max-out-claude-code",
+  "title": "How to Max Out Claude Code for Frontend",
+  "description": "The three upgrades that turn Claude Code from a decent coding assistant into a frontend machine.",
+  "date": "2026-03-12",
+  "intro": "Most people use Claude Code out of the box and wonder why their websites look mid. The default setup is fine for logic and backend stuff, but for frontend? You need to give it better tools. Here are the three upgrades that completely change what Claude Code can build.",
+  "sections": [
+    {
+      "emoji": "🎨",
+      "heading": "Install the Frontend Design Skill",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "Claude Code has a skill system. Skills are like plugins that change how Claude thinks about specific tasks. The frontend design skill is the single biggest upgrade you can make if you're building anything visual."
+        },
+        {
+          "type": "text",
+          "content": "Without it, Claude treats every page the same. Uniform spacing, generic layouts, no visual hierarchy. With the skill installed, Claude starts making actual design decisions. It thinks about whitespace, typography scale, section rhythm, responsive breakpoints. The difference is night and day."
+        },
+        {
+          "type": "text",
+          "content": "You run it before building any page:"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "/frontend-design I'm building a landing page for a dev tool.\nWhat's the best layout approach for hero, features, pricing?"
+        },
+        {
+          "type": "text",
+          "content": "Claude comes back with a structured plan. Section order, layout patterns, spacing recommendations. Then you build based on that plan instead of letting Claude wing it. Think of it as giving Claude Code a design brain before it starts writing code."
+        },
+        {
+          "type": "text",
+          "content": "You can also use it mid-build to fix things that feel off:"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "/frontend-design The features section feels flat and\neverything looks the same size. How do I improve the\nvisual hierarchy?"
+        },
+        {
+          "type": "text",
+          "content": "It's like having a designer on call while you build. You still make the decisions, but you've got someone to bounce ideas off of."
+        }
+      ]
+    },
+    {
+      "emoji": "🧱",
+      "heading": "Add the ShadCN and Magic UI MCP Servers",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "MCP servers are how you give Claude Code access to external tools and APIs. The two that matter most for frontend are ShadCN and Magic UI. Installing them is like giving Claude Code a component library it can actually browse and pull from."
+        },
+        {
+          "type": "heading3",
+          "content": "ShadCN: The Foundation"
+        },
+        {
+          "type": "text",
+          "content": "ShadCN is a library of clean, production-ready components. Buttons, cards, navigation, dialogs, forms. All pre-styled, all customizable. With the MCP server installed, Claude can browse the full registry and pull exactly the right component for what you're building."
+        },
+        {
+          "type": "link",
+          "text": "ShadCN component library",
+          "url": "https://ui.shadcn.com/"
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/4gGKDSu.png",
+          "caption": "ShadCN UI: clean, production-ready components Claude can pull from directly"
+        },
+        {
+          "type": "text",
+          "content": "Without ShadCN, Claude writes its own button styles, its own card layouts, its own form inputs. They work, but they look like a developer designed them. ShadCN gives Claude a professional baseline so everything looks consistent from the start."
+        },
+        {
+          "type": "heading3",
+          "content": "Magic UI: The Visual Layer"
+        },
+        {
+          "type": "text",
+          "content": "Magic UI is built on top of ShadCN and adds the stuff that makes a page feel alive. Animated gradients, text reveals, shimmer effects, bento grids, border beams, number tickers, marquees. Over 150 components designed to make your site look like a real product, not a homework assignment."
+        },
+        {
+          "type": "link",
+          "text": "Magic UI components",
+          "url": "https://magicui.design/"
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/QSwOsw1.png",
+          "caption": "Magic UI: 150+ animated components built on top of ShadCN"
+        },
+        {
+          "type": "text",
+          "content": "The setup for both goes in your Claude Code MCP config:"
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "content": "{\n  \"mcpServers\": {\n    \"shadcn\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@anthropic-ai/shadcn-mcp-server\"]\n    },\n    \"magicui\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@anthropic-ai/magicui-mcp-server\"]\n    }\n  }\n}"
+        },
+        {
+          "type": "text",
+          "content": "Once installed, you can reference specific components by name in your prompts. Instead of saying \"build me a pricing section,\" you say \"build a pricing section with ShadCN Card components, Badge for the popular tag, and a ShimmerButton from Magic UI for the CTA.\" Claude knows exactly what you mean because it can browse the component registries directly."
+        },
+        {
+          "type": "text",
+          "content": "Quick tip: use Magic UI sparingly. Animations are like seasoning. A little on the hero, one feature section, and the CTA. If everything is animated, nothing stands out."
+        }
+      ]
+    },
+    {
+      "emoji": "🤖",
+      "heading": "Create Sub-Agents for Frontend and Testing",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "This is the one most people skip, and it's arguably the biggest multiplier. Claude Code can spawn sub-agents, basically smaller versions of itself that focus on one specific job. For frontend, you want two: a frontend agent and a Playwright agent."
+        },
+        {
+          "type": "heading3",
+          "content": "The Frontend Sub-Agent"
+        },
+        {
+          "type": "text",
+          "content": "A frontend sub-agent is a dedicated agent that knows your project's design system, component patterns, and styling conventions. You define it in a markdown file that tells it things like: which component library you're using, your color palette, your spacing scale, your responsive breakpoints."
+        },
+        {
+          "type": "text",
+          "content": "When Claude needs to build a new component or page, it delegates to this agent instead of figuring it out from scratch every time. The result is way more consistent output because the agent already has all the context loaded."
+        },
+        {
+          "type": "code",
+          "language": "markdown",
+          "content": "# Frontend Agent\n\n## Design System\n- Components: ShadCN + Magic UI\n- Colors: Dark theme, blue-500 accent, zinc-900 background\n- Spacing: 4px base unit, sections 80px apart\n- Typography: Inter for body, Cal Sans for headings\n\n## Rules\n- Always use ShadCN components before writing custom ones\n- Mobile-first responsive design\n- Magic UI animations only on hero and CTA sections\n- All images must have alt text and lazy loading"
+        },
+        {
+          "type": "heading3",
+          "content": "The Playwright Sub-Agent"
+        },
+        {
+          "type": "text",
+          "content": "This is the one that closes the loop. A Playwright sub-agent can actually open your application in a browser, take screenshots, and verify that things look right. Claude Code builds the page, then the Playwright agent checks it visually."
+        },
+        {
+          "type": "link",
+          "text": "Playwright docs",
+          "url": "https://playwright.dev/"
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/1SBGirK.png",
+          "caption": "Playwright: browser automation that lets your agent test its own work"
+        },
+        {
+          "type": "text",
+          "content": "Without this, you're the feedback loop. You have to look at the page, tell Claude what's wrong, wait for the fix, check again. With the Playwright agent, Claude can self-correct. It builds, screenshots, sees the issue, and fixes it before you even look."
+        },
+        {
+          "type": "text",
+          "content": "The setup is simple. Create an agent definition that knows how to launch Playwright, navigate to your dev server, and screenshot specific pages or components:"
+        },
+        {
+          "type": "code",
+          "language": "markdown",
+          "content": "# Playwright Agent\n\n## Purpose\nVisual QA for the frontend. Screenshot pages and components\nto verify they render correctly.\n\n## Workflow\n1. Launch browser with Playwright\n2. Navigate to the dev server (localhost:3000)\n3. Screenshot the target page/component\n4. Report any visual issues (broken layouts, overflow,\n   missing elements)\n5. Compare against the design plan if one exists"
+        },
+        {
+          "type": "text",
+          "content": "The combination is powerful. The frontend agent builds with consistency, and the Playwright agent catches visual issues automatically. You go from micromanaging every pixel to reviewing finished work."
+        }
+      ]
+    }
+  ],
+  "example": {
+    "emoji": "🔧",
+    "heading": "The Full Setup in 5 Minutes",
+    "blocks": [
+      {
+        "type": "text",
+        "content": "Here's the exact sequence to go from default Claude Code to a maxed-out frontend setup."
+      },
+      {
+        "type": "text",
+        "content": "First, add the MCP servers to your config. Open your Claude Code settings and add the ShadCN and Magic UI servers (config shown above). Restart Claude Code."
+      },
+      {
+        "type": "text",
+        "content": "Second, install the frontend design skill. This gives Claude the design thinking layer."
+      },
+      {
+        "type": "text",
+        "content": "Third, create your two agent files. Drop the frontend agent and Playwright agent markdown files into your .claude/agents/ directory. Customize them for your project's stack and design preferences."
+      },
+      {
+        "type": "text",
+        "content": "Now when you build, the workflow is: plan with /frontend-design, build with the frontend agent (which uses ShadCN and Magic UI), and verify with the Playwright agent. The whole thing takes about 5 minutes to set up and it permanently changes the quality of what Claude Code produces."
+      }
+    ]
+  },
+  "proTips": [
+    {
+      "title": "Browse the component libraries before prompting",
+      "body": "Spend 5 minutes on ui.shadcn.com and magicui.design. Know what components exist so you can name them in your prompts. \"Use the ShadCN Accordion\" gives way better results than \"make a collapsible section.\""
+    },
+    {
+      "title": "Your agent files are living documents",
+      "body": "Update your frontend agent's markdown file as your project evolves. New color added? New component pattern? Add it to the agent file so Claude stays in sync with your design system."
+    },
+    {
+      "title": "Let Playwright catch the small stuff",
+      "body": "Don't just use the Playwright agent for full-page screenshots. Have it check specific things like: does the mobile nav work? Is there horizontal scroll? Do all images load? These are the bugs that waste the most time when you find them manually."
+    },
+    {
+      "title": "Layer your tools, don't use them all at once",
+      "body": "Plan first (frontend design skill), then build the structure (ShadCN), then add polish (Magic UI), then verify (Playwright). Going in order gives Claude clear focus at each step instead of trying to do everything simultaneously."
+    }
+  ]
+}
