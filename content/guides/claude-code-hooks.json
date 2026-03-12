@@ -1,0 +1,216 @@
+{
+  "slug": "claude-code-hooks",
+  "title": "Claude Code Hooks: Automate Your Workflow",
+  "description": "How to use Claude Code hooks to auto-format code, run linters, send notifications, and more.",
+  "date": "2026-03-12",
+  "intro": "Claude Code has a hook system that most people never touch. Hooks let you run custom commands automatically whenever Claude does something specific, like editing a file, using a tool, or finishing a task. Once you set them up, your code stays formatted, your linters run automatically, and you never have to think about it again.",
+  "sections": [
+    {
+      "emoji": "🪝",
+      "heading": "What Are Hooks?",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "Hooks are commands that run automatically at specific points in Claude Code's lifecycle. Think of them like Git hooks, but for your AI coding assistant. Instead of running after a commit, they run after Claude edits a file, uses a tool, or sends you a notification."
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/8rZosnF.png",
+          "caption": "Claude Code docs: hooks are configured in your settings JSON"
+        },
+        {
+          "type": "text",
+          "content": "To see all available hooks, open Claude Code and type /hooks. You'll get a list of every event you can hook into. Each one represents a moment where you can inject your own automation."
+        },
+        {
+          "type": "text",
+          "content": "The hook events you'll use most:"
+        },
+        {
+          "type": "bullet",
+          "items": [
+            "PostToolUse: runs after Claude uses any tool (file edit, bash command, etc.)",
+            "PreToolUse: runs before a tool is used, can block or modify the action",
+            "Notification: runs when Claude wants to notify you of something",
+            "PostEditFile: runs specifically after a file is edited"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "You configure hooks in your Claude Code settings. Open your settings JSON and add a hooks section. Each hook specifies which event to listen for, an optional file pattern matcher, and the command to run."
+        }
+      ]
+    },
+    {
+      "emoji": "✨",
+      "heading": "Auto-Format Code on Every Edit",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "This is the most useful hook and the one you should set up first. Every time Claude edits a file, this hook runs your formatter automatically. No AI tokens wasted on formatting. Consistent code across your entire project."
+        },
+        {
+          "type": "text",
+          "content": "Here's the setup for Prettier (the most popular code formatter):"
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "content": "{\n  \"hooks\": {\n    \"PostEditFile\": [\n      {\n        \"matcher\": \"**/*.{ts,tsx,js,jsx,css,json}\",\n        \"command\": \"npx prettier --write $CLAUDE_FILE_PATH\"\n      }\n    ]\n  }\n}"
+        },
+        {
+          "type": "text",
+          "content": "The matcher field uses glob patterns, so you can target specific file types. The $CLAUDE_FILE_PATH variable gets replaced with the actual file that was edited. Every time Claude touches a TypeScript, JavaScript, CSS, or JSON file, Prettier formats it instantly."
+        },
+        {
+          "type": "link",
+          "text": "Prettier docs",
+          "url": "https://prettier.io/"
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/F3vi9cu.png",
+          "caption": "Prettier: the most popular code formatter, runs instantly on single files"
+        },
+        {
+          "type": "text",
+          "content": "Why this matters: without this hook, Claude sometimes produces inconsistent formatting. Tabs vs spaces, different quote styles, inconsistent line breaks. The formatter catches all of it. And because it runs as a shell command (not AI), it's instant and free."
+        }
+      ]
+    },
+    {
+      "emoji": "🔍",
+      "heading": "Auto-Lint After Edits",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "Same idea as formatting, but for catching actual code issues. Set up ESLint to run after every file edit and Claude's output gets checked for common mistakes automatically."
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "content": "{\n  \"hooks\": {\n    \"PostEditFile\": [\n      {\n        \"matcher\": \"**/*.{ts,tsx,js,jsx}\",\n        \"command\": \"npx eslint --fix $CLAUDE_FILE_PATH\"\n      }\n    ]\n  }\n}"
+        },
+        {
+          "type": "link",
+          "text": "ESLint docs",
+          "url": "https://eslint.org/"
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/pqOKfgw.png",
+          "caption": "ESLint: catches code issues and auto-fixes what it can"
+        },
+        {
+          "type": "text",
+          "content": "The --fix flag means ESLint will automatically fix what it can (unused imports, missing semicolons, simple style issues). Anything it can't fix will show up as an error that Claude sees and can address."
+        },
+        {
+          "type": "text",
+          "content": "You can stack multiple PostEditFile hooks. Run Prettier first for formatting, then ESLint for linting. They execute in order:"
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "content": "{\n  \"hooks\": {\n    \"PostEditFile\": [\n      {\n        \"matcher\": \"**/*.{ts,tsx,js,jsx}\",\n        \"command\": \"npx prettier --write $CLAUDE_FILE_PATH\"\n      },\n      {\n        \"matcher\": \"**/*.{ts,tsx,js,jsx}\",\n        \"command\": \"npx eslint --fix $CLAUDE_FILE_PATH\"\n      }\n    ]\n  }\n}"
+        }
+      ]
+    },
+    {
+      "emoji": "🔔",
+      "heading": "Custom Notifications",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "The Notification hook fires whenever Claude wants to tell you something. By default, this just shows up in your terminal. But you can redirect it anywhere: Slack, Discord, Telegram, a desktop notification, whatever."
+        },
+        {
+          "type": "text",
+          "content": "Here's a simple example that sends a desktop notification on macOS:"
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "content": "{\n  \"hooks\": {\n    \"Notification\": [\n      {\n        \"command\": \"osascript -e 'display notification \\\"$CLAUDE_NOTIFICATION\\\" with title \\\"Claude Code\\\"'\"\n      }\n    ]\n  }\n}"
+        },
+        {
+          "type": "text",
+          "content": "Or send it to a Slack webhook:"
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "content": "{\n  \"hooks\": {\n    \"Notification\": [\n      {\n        \"command\": \"curl -s -X POST $SLACK_WEBHOOK -d '{\\\"text\\\": \\\"Claude: $CLAUDE_NOTIFICATION\\\"}'\"\n      }\n    ]\n  }\n}"
+        },
+        {
+          "type": "text",
+          "content": "This is especially useful when Claude is running long tasks. You can walk away and get pinged when something needs your attention, instead of staring at the terminal."
+        }
+      ]
+    },
+    {
+      "emoji": "🛡️",
+      "heading": "PreToolUse: Guard Rails",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "PreToolUse hooks run before Claude executes a tool. If your hook exits with a non-zero code, the tool use is blocked. This lets you set up guard rails for things you never want Claude to do."
+        },
+        {
+          "type": "text",
+          "content": "For example, prevent Claude from deleting certain files:"
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "content": "{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"command\": \"echo $CLAUDE_TOOL_INPUT | grep -q 'rm.*\\\\.env' && exit 1 || exit 0\"\n      }\n    ]\n  }\n}"
+        },
+        {
+          "type": "text",
+          "content": "That hook checks if Claude is about to run a Bash command that deletes .env files. If it is, the hook exits with code 1 and the command is blocked. Simple but effective."
+        },
+        {
+          "type": "text",
+          "content": "Other ideas for PreToolUse hooks: block pushes to main branch, prevent edits to config files, require confirmation for destructive operations. Think of it as a programmable safety net."
+        }
+      ]
+    }
+  ],
+  "example": {
+    "emoji": "⚡",
+    "heading": "A Complete Hooks Setup",
+    "blocks": [
+      {
+        "type": "text",
+        "content": "Here's a full hooks configuration you can drop into your Claude Code settings. It covers formatting, linting, and notifications."
+      },
+      {
+        "type": "code",
+        "language": "json",
+        "content": "{\n  \"hooks\": {\n    \"PostEditFile\": [\n      {\n        \"matcher\": \"**/*.{ts,tsx,js,jsx,css,json,md}\",\n        \"command\": \"npx prettier --write $CLAUDE_FILE_PATH\"\n      },\n      {\n        \"matcher\": \"**/*.{ts,tsx,js,jsx}\",\n        \"command\": \"npx eslint --fix $CLAUDE_FILE_PATH\"\n      }\n    ],\n    \"Notification\": [\n      {\n        \"command\": \"echo \\\"[Claude] $CLAUDE_NOTIFICATION\\\" >> ~/claude-log.txt\"\n      }\n    ]\n  }\n}"
+      },
+      {
+        "type": "text",
+        "content": "Copy this into your settings, adjust the file patterns to match your project, and you're done. Every file Claude touches gets formatted and linted automatically. Every notification gets logged. Zero ongoing effort."
+      }
+    ]
+  },
+  "proTips": [
+    {
+      "title": "Test your hooks with a simple echo first",
+      "body": "Before wiring up real commands, test with something like \"echo $CLAUDE_FILE_PATH >> /tmp/hook-test.txt\". Run Claude, check the file, and make sure the hook is triggering on the right events. Then swap in the real command."
+    },
+    {
+      "title": "Keep hook commands fast",
+      "body": "Hooks run synchronously. If your hook takes 10 seconds, Claude waits 10 seconds after every file edit. Prettier and ESLint on a single file are usually instant, but avoid running full project builds or test suites as hooks."
+    },
+    {
+      "title": "Use matchers to scope your hooks",
+      "body": "Don't run Prettier on every file type. Target specific extensions with glob patterns like **/*.{ts,tsx}. This keeps hooks fast and avoids running formatters on files that don't need them (binaries, images, etc.)."
+    },
+    {
+      "title": "Stack hooks in the right order",
+      "body": "If you're running both Prettier and ESLint, put Prettier first. Prettier handles formatting, ESLint handles logic. Running them in the wrong order means ESLint might flag formatting issues that Prettier would have fixed."
+    }
+  ]
+}
