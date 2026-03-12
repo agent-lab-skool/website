@@ -218,5 +218,8 @@
       "title": "Layer your tools, don't use them all at once",
       "body": "Plan first (frontend design skill), then build the structure (ShadCN), then add polish (Magic UI), then verify (Playwright). Going in order gives Claude clear focus at each step instead of trying to do everything simultaneously."
     }
+  ],
+  "inroScenarioIds": [
+    20979
   ]
 }
