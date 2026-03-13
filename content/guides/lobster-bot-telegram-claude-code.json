@@ -3,6 +3,7 @@
   "title": "How to Build a Personal AI Assistant on Telegram With Claude Code",
   "description": "Turn Claude Code into a 24/7 Telegram assistant with memory, tools, and autonomous agents.",
   "date": "2026-03-13",
+  "inroScenarioIds": [21048],
   "intro": "Claude Code is better than ChatGPT for pretty much everything, but most people use it inside a terminal and call it a day. What if you could talk to it from your phone, give it persistent memory, connect it to any API, and let it run tasks in the background while you sleep? That's what Lobster Bot is. Here's exactly how to build one yourself.",
   "sections": [
     {
