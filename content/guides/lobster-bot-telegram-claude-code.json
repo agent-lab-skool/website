@@ -1,0 +1,331 @@
+{
+  "slug": "lobster-bot-telegram-claude-code",
+  "title": "How to Build a Personal AI Assistant on Telegram With Claude Code",
+  "description": "Turn Claude Code into a 24/7 Telegram assistant with memory, tools, and autonomous agents.",
+  "date": "2026-03-13",
+  "intro": "Claude Code is better than ChatGPT for pretty much everything, but most people use it inside a terminal and call it a day. What if you could talk to it from your phone, give it persistent memory, connect it to any API, and let it run tasks in the background while you sleep? That's what Lobster Bot is. Here's exactly how to build one yourself.",
+  "sections": [
+    {
+      "emoji": "🤖",
+      "heading": "What Lobster Bot Actually Is",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "Lobster Bot is a Telegram wrapper around Claude Code. It runs on a VPS (a cheap cloud server you own), uses your existing Claude Code subscription, and gives you a personal AI assistant you can text from anywhere."
+        },
+        {
+          "type": "text",
+          "content": "Think of it like ChatGPT on Telegram, except way more powerful. It has persistent memory (it remembers everything across conversations), it can run shell commands, browse the web, manage files, automate workflows, and delegate complex tasks to specialized agents. It's not a chatbot. It's an operating system you talk to."
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/JeLeCeo.png",
+          "caption": "The lobster-bot repo: Python + Claude Code + Telegram"
+        },
+        {
+          "type": "text",
+          "content": "The key difference from ChatGPT or regular Claude: this runs on YOUR server. You have root access. It can install packages, edit system files, run scripts, call APIs, and do anything a developer could do from a terminal. Except you're controlling it from your phone while you're eating lunch."
+        }
+      ]
+    },
+    {
+      "emoji": "🏗️",
+      "heading": "The Architecture",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "The bot has three layers that work together:"
+        },
+        {
+          "type": "heading3",
+          "content": "1. Telegram Interface"
+        },
+        {
+          "type": "text",
+          "content": "A Python bot using python-telegram-bot that handles incoming messages, photos, voice notes, and documents. It manages message queues (so you can send multiple messages while Claude is thinking), per-chat concurrency locks, and splits long responses to fit Telegram's 4096 character limit."
+        },
+        {
+          "type": "heading3",
+          "content": "2. Claude Code Bridge"
+        },
+        {
+          "type": "text",
+          "content": "The bridge layer invokes Claude Code as a subprocess. Every message you send on Telegram gets piped into claude -p with session resumption, so Claude remembers your full conversation. It parses the JSON output, handles errors, and tracks API usage costs."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "content": "# Simplified version of the bridge\nresult = subprocess.run(\n    ['claude', '-p', message, '--session', session_id, '--output-format', 'json'],\n    capture_output=True, text=True, timeout=300\n)"
+        },
+        {
+          "type": "heading3",
+          "content": "3. Tools and Agents"
+        },
+        {
+          "type": "text",
+          "content": "This is where it gets interesting. Claude Code already has access to bash, file editing, web search, etc. But you can extend it with custom tool scripts. In Lobster Bot, there are toolkits for Skool course management, Instagram automation, Miro board building, OpenAI (Whisper transcription, image generation), web scraping, and more. Each toolkit lives in its own directory with clean CLI scripts that Claude can call."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": "tools/\n├── skool/       # Course management (Playwright)\n├── inro/        # Instagram DM automation\n├── openai/      # Whisper, DALL-E, TTS\n├── apify/       # Web scraping (IG, TikTok, YouTube)\n├── miro/        # Visual board building\n├── growth/      # Analytics across all channels\n├── lead-magnet/ # End-to-end lead gen pipeline\n└── telegram/    # Send updates from within Claude"
+        }
+      ]
+    },
+    {
+      "emoji": "🧠",
+      "heading": "Memory That Actually Works",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "The biggest problem with AI assistants is they forget everything. ChatGPT's memory is a joke. Claude's projects are decent but limited. Lobster Bot solves this with a file-based memory system that Claude reads at the start of every conversation."
+        },
+        {
+          "type": "text",
+          "content": "There are four types of memory:"
+        },
+        {
+          "type": "bullet",
+          "items": [
+            "User memory: who you are, your preferences, how you like to work",
+            "Feedback memory: corrections you've given so Claude doesn't repeat mistakes",
+            "Project memory: ongoing work, deadlines, decisions made",
+            "Reference memory: where to find things in external systems (Notion pages, Slack channels, dashboards)"
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Each memory is a markdown file with frontmatter. There's a MEMORY.md index that gets loaded into every conversation, pointing to detailed memory files. Claude reads it, understands context, and picks up exactly where you left off."
+        },
+        {
+          "type": "code",
+          "language": "markdown",
+          "content": "---\nname: user-preferences\ndescription: How the user likes to work\ntype: user\n---\n\n- Prefers short, direct responses\n- Hates when AI adds unnecessary caveats\n- Senior developer, don't over-explain basics"
+        },
+        {
+          "type": "text",
+          "content": "On top of that, every conversation gets logged to a SQLite database and a daily markdown file. So you have full chat history, searchable, with timestamps. Claude can query its own past conversations if it needs context from last week."
+        }
+      ]
+    },
+    {
+      "emoji": "🤹",
+      "heading": "Agents and Skills",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "The real power of this setup is delegation. The main Claude instance acts as an orchestrator. It receives your message, figures out what needs to happen, and delegates to specialized agents."
+        },
+        {
+          "type": "text",
+          "content": "Agents are markdown files in .claude/agents/ that give Claude deep context about a specific tool or workflow. When Claude spawns an agent, it runs as a separate subprocess with its own context window, does the work, and reports back."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "content": ".claude/agents/\n├── minion.md       # Generic task executor\n├── skool.md        # Course management specialist\n├── researcher.md   # Web research\n├── writer.md       # Content drafting\n├── miro.md         # Visual board building\n└── scheduler.md    # Planning and reminders"
+        },
+        {
+          "type": "text",
+          "content": "Skills are even more powerful. They're multi-step workflows that run autonomously. For example, the lead-magnet skill scrapes an Instagram reel, transcribes it with Whisper, builds a guide page, creates a DM automation, and posts to a community. All from a single message."
+        },
+        {
+          "type": "text",
+          "content": "You say \"lead magnet for my latest vid\" and come back 5 minutes later to a fully published guide with DM automation live. That's the level of automation we're talking about."
+        }
+      ]
+    },
+    {
+      "emoji": "🖥️",
+      "heading": "Setting It Up",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "You need three things: a VPS, a Claude Code subscription, and a Telegram bot token."
+        },
+        {
+          "type": "heading3",
+          "content": "1. Get a VPS"
+        },
+        {
+          "type": "text",
+          "content": "Any cloud server works. DigitalOcean, Hetzner, AWS, whatever. A $5-10/month server is plenty. You want Ubuntu or Debian, at least 2GB RAM. SSH in and you're ready."
+        },
+        {
+          "type": "heading3",
+          "content": "2. Install Claude Code"
+        },
+        {
+          "type": "text",
+          "content": "Claude Code installs via npm. You need Node.js 18+ on your server."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "content": "npm install -g @anthropic-ai/claude-code\nclaude login"
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/jUYBTuV.png",
+          "caption": "Claude Code docs: the AI-powered coding agent that lives in your terminal"
+        },
+        {
+          "type": "heading3",
+          "content": "3. Create a Telegram Bot"
+        },
+        {
+          "type": "text",
+          "content": "Message @BotFather on Telegram, send /newbot, follow the prompts, and grab your token. That's it. Takes 30 seconds."
+        },
+        {
+          "type": "image",
+          "url": "https://i.imgur.com/4a9LSg1.png",
+          "caption": "Telegram's Bot API: simple, well-documented, free"
+        },
+        {
+          "type": "heading3",
+          "content": "4. Clone and Configure"
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "content": "git clone https://github.com/agent-lab-skool/lobster-bot.git\ncd lobster-bot\ncp .env.example .env\n# Edit .env with your TELEGRAM_TOKEN and TELEGRAM_USER_IDS\nnano .env"
+        },
+        {
+          "type": "text",
+          "content": "Set TELEGRAM_USER_IDS to your Telegram user ID so only you can use the bot. You don't want random people burning your Claude credits."
+        },
+        {
+          "type": "heading3",
+          "content": "5. Run It"
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "content": "python run.py"
+        },
+        {
+          "type": "text",
+          "content": "The run script validates all dependencies, checks your .env config, and starts the bot. For production, set it up as a systemd service so it auto-restarts on crashes and survives server reboots."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "content": "# Create a systemd service for auto-restart\nsudo cp lobster-bot.service /etc/systemd/system/\nsudo systemctl enable lobster-bot\nsudo systemctl start lobster-bot"
+        }
+      ]
+    },
+    {
+      "emoji": "🔧",
+      "heading": "Adding Your Own Tools",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "The real fun starts when you customize it. Want Claude to manage your calendar? Write a tool. Want it to post to Twitter? Write a tool. Want it to check your crypto portfolio? Tool."
+        },
+        {
+          "type": "text",
+          "content": "Every tool is just a script in tools/<name>/ that Claude can call. The convention is simple: take arguments from the command line, do the thing, print the result to stdout. Claude figures out the rest."
+        },
+        {
+          "type": "code",
+          "language": "javascript",
+          "content": "// tools/weather/check.js\nconst city = process.argv[2];\nconst res = await fetch(`https://api.weather.com/...?q=${city}`);\nconst data = await res.json();\nconsole.log(`${data.temp}°F, ${data.condition}`);"
+        },
+        {
+          "type": "text",
+          "content": "Then tell Claude about it in CLAUDE.md:"
+        },
+        {
+          "type": "code",
+          "language": "markdown",
+          "content": "## Tools Available\n- Check weather: `node tools/weather/check.js <city>`"
+        },
+        {
+          "type": "text",
+          "content": "That's it. Next time you text \"what's the weather in New York\" Claude will run the script and tell you. No API gateway, no webhook setup, no deployment pipeline. Just a script on your server."
+        }
+      ]
+    },
+    {
+      "emoji": "⚡",
+      "heading": "What You Can Actually Do With It",
+      "blocks": [
+        {
+          "type": "text",
+          "content": "Here are real things Lobster Bot does daily (not hypothetical, these are actual production workflows):"
+        },
+        {
+          "type": "bullet",
+          "items": [
+            "Scrape an Instagram reel, transcribe it, build a lead magnet guide page, set up DM automation, and post to a community. One message.",
+            "Manage 7 online courses: add pages, edit content, upload resources, restructure modules. All through Telegram.",
+            "Run growth analytics across Instagram, TikTok, DM automation, and website traffic. Cross-reference funnels and spot trends.",
+            "Build visual course outlines on Miro boards with proper layout, colors, and frame structure.",
+            "Read and analyze Notion journal entries, spot patterns in your thinking, and give honest feedback.",
+            "Research any topic using web search and multiple AI models (GPT, Grok, Claude), synthesize findings.",
+            "Schedule tasks and reminders that trigger Claude to do actual work, not just send notifications."
+          ]
+        },
+        {
+          "type": "text",
+          "content": "The key insight: this isn't a chatbot that answers questions. It's an autonomous agent that does work. You can text it \"build me a landing page for X\" and come back to a deployed website. The gap between what you say and what happens is the entire value."
+        }
+      ]
+    }
+  ],
+  "example": {
+    "emoji": "💬",
+    "heading": "A Real Conversation",
+    "blocks": [
+      {
+        "type": "text",
+        "content": "Here's what it actually looks like in practice. You text the bot on Telegram:"
+      },
+      {
+        "type": "code",
+        "language": "text",
+        "content": "You: lead magnet for my latest reel\n\nBot: on it, scraping the reel now\nBot: got the transcript, building out the guide\nBot: guide is live at aflekkas.com/guides/...\nBot: DM automation set up, keyword is LOBSTER\nBot: posted to Skool community. all done ✓"
+      },
+      {
+        "type": "text",
+        "content": "That's 5 different tools working together: Instagram scraping, Whisper transcription, website publishing, DM automation, and community posting. All triggered by one sentence. The bot sends you live updates as it works so you're never left wondering what's happening."
+      },
+      {
+        "type": "text",
+        "content": "Or something simpler:"
+      },
+      {
+        "type": "code",
+        "language": "text",
+        "content": "You: what's my growth looking like this week\n\nBot: pulling the numbers, give me a sec\nBot: Instagram: 12.4k reach (up 23% from last week)\n     DMs sent: 847, guide views: 2,341\n     New Skool members: 8 (3 from guide funnel)\n     Top performing guide: max-out-claude-code (21% CTR)"
+      },
+      {
+        "type": "text",
+        "content": "It's pulling from 5 different data sources, cross-referencing them, and giving you the summary. No dashboard hopping, no spreadsheets. Just ask."
+      }
+    ]
+  },
+  "proTips": [
+    {
+      "title": "Use CLAUDE.md as your bot's personality",
+      "body": "Everything in CLAUDE.md shapes how Claude responds. Want it casual? Say so. Want it to never use emojis? Add that rule. Want it to always check your calendar before scheduling? Write it in. CLAUDE.md is the single most important file in the entire setup."
+    },
+    {
+      "title": "Build agents for repeated workflows",
+      "body": "If you find yourself asking Claude to do the same multi-step thing more than twice, create an agent for it. Agents are just markdown files with deep context about a specific tool or workflow. They turn a 5-minute back-and-forth into a one-message delegation."
+    },
+    {
+      "title": "Set up the heartbeat for auto-updates",
+      "body": "Lobster Bot has a heartbeat task that auto-pulls from git every 5 minutes. Push changes to your repo from your laptop and the bot updates itself on the server. No SSH, no manual deploys."
+    },
+    {
+      "title": "Track your API costs",
+      "body": "The bot tracks Claude API usage per conversation with daily budget alerts. Set a daily limit (like $5/day) so you don't accidentally burn through your credits on a runaway agent loop. It'll warn you at 50%, 80%, and 100% of the budget."
+    },
+    {
+      "title": "Voice notes work too",
+      "body": "Send a voice message on Telegram and the bot transcribes it with Whisper before sending to Claude. Great for when you're walking and want to give complex instructions without typing."
+    }
+  ]
+}
